@@ -6,6 +6,7 @@ import CustomButton from "../../components/CustomButton";
 import Bg from "../../Images/bg.jpg";
 const { width } = Dimensions.get("window");
 
+// Wi Login an
 class Login extends React.Component {
   state = {
     username: "",
