@@ -11,11 +11,11 @@ import FindIcon from '../../Images/findicon.png';
 
 const { width, height } = Dimensions.get('window');
 
-const {action, year, month, day} = await DatePickerAndroid.open({
-    // Use `new Date()` for current date.
-    // May 25 2020. Month 0 is January.
-    date: new Date(2020, 4, 25)
-  });
+// const {action, year, month, day} = await DatePickerAndroid.open({
+//     // Use `new Date()` for current date.
+//     // May 25 2020. Month 0 is January.
+//     date: new Date(2020, 4, 25)
+//   });
 
 
   /////////////////////////////test///////////////////////////////////

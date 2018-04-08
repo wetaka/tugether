@@ -115,17 +115,17 @@
         jumboMode="false"
         optimize="true"
         revision="23.0.1"
-        sha1="9f95540d3b14aed0250ba28dd07beece0df87598">
+        sha1="4bc7e4c88d8a58037f153bc224b47da51ae40f2f">
         <dex dex="C:\Users\lenovo\Desktop\tugether\android\app\build\intermediates\pre-dexed\debug\tugether-react-native-image-picker-unspecified_12263d7f5ea7032e7d25cad2efdad25e492871db.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="C:\Users\lenovo\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.0.1\support-annotations-23.0.1.jar"
+        jar="C:\Users\lenovo\AppData\Local\Android\Sdk\extras\android\m2repository\com\android\support\support-annotations\23.0.1\support-annotations-23.0.1.jar"
         jumboMode="false"
         optimize="true"
         revision="23.0.1"
         sha1="1fce89a6428c51467090d7f424e4c9c3dbd55f7e">
-        <dex dex="C:\Users\lenovo\Desktop\tugether\android\app\build\intermediates\pre-dexed\debug\support-annotations-23.0.1_1584a73fa19f0026044bb40eaf8a83268b3b7432.jar" />
+        <dex dex="C:\Users\lenovo\Desktop\tugether\android\app\build\intermediates\pre-dexed\debug\support-annotations-23.0.1_b938d4cb03a6043ffd497dd56d5b2106a70619de.jar" />
     </item>
     <item
         is-multidex="false"
@@ -174,21 +174,21 @@
     </item>
     <item
         is-multidex="false"
-        jar="C:\Users\lenovo\.gradle\caches\modules-2\files-2.1\javax.inject\javax.inject\1\6975da39a7040257bd51d21a231b76c915872d38\javax.inject-1.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="23.0.1"
-        sha1="6975da39a7040257bd51d21a231b76c915872d38">
-        <dex dex="C:\Users\lenovo\Desktop\tugether\android\app\build\intermediates\pre-dexed\debug\javax.inject-1_ba5d8f964d33da1844f9620a1e4a660c5ef3b47e.jar" />
-    </item>
-    <item
-        is-multidex="false"
         jar="C:\Users\lenovo\.gradle\caches\modules-2\files-2.1\com.parse.bolts\bolts-tasks\1.4.0\d85884acf6810a3bbbecb587f239005cbc846dc4\bolts-tasks-1.4.0.jar"
         jumboMode="false"
         optimize="true"
         revision="23.0.1"
         sha1="d85884acf6810a3bbbecb587f239005cbc846dc4">
         <dex dex="C:\Users\lenovo\Desktop\tugether\android\app\build\intermediates\pre-dexed\debug\bolts-tasks-1.4.0_ef15d82e81c34ce0ff192753187f7fa9c5af6814.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\lenovo\.gradle\caches\modules-2\files-2.1\javax.inject\javax.inject\1\6975da39a7040257bd51d21a231b76c915872d38\javax.inject-1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="6975da39a7040257bd51d21a231b76c915872d38">
+        <dex dex="C:\Users\lenovo\Desktop\tugether\android\app\build\intermediates\pre-dexed\debug\javax.inject-1_ba5d8f964d33da1844f9620a1e4a660c5ef3b47e.jar" />
     </item>
     <item
         is-multidex="false"

@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Router, Stack, Scene } from 'react-native-router-flux';
 import Login from './src/pages/Login'
+import Category from './src/pages/Category'
 import Description from './src/pages/Description'
 import Joined from './src/pages/Joined'
 import CreateEvent from './src/pages/CreateEvent'
@@ -16,10 +17,11 @@ export default class App extends React.Component {
       <Router>
 
         <Stack key='root'>
-          <Scene key='login' hideNavBar component={Login} />
+          <Scene key='Login' hideNavBar component={Login}  initial={true} />
+          <Scene key='Category' hideNavBar component={Category}   />
           <Scene key='Description' hideNavBar component={Description} />
           <Scene key='Joined' hideNavBar component={Joined}/>
-          <Scene key='CreateEvent'hideNavBar component={CreateEvent} initial={true} />
+          <Scene key='CreateEvent'hideNavBar component={CreateEvent}/>
           <Scene key='Home' hideNavBar component={Home}/>
           <Scene key='Main' hideNavBar component={Main}  />
         </Stack>

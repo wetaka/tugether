@@ -8,9 +8,10 @@ export default class CustomInput extends Component {
         secureTextEntry={this.props.secureTextEntry}
         keyboardType={this.props.keyboardType}
         style={{height: 40, borderColor: 'gray', borderWidth: 1, flex: (this.props.isFull) ? 1 : 0 }}
-        onChangeText={() => {}}
+        onChangeText={(text) => { this.props.onChangeText(text)}}
         placeholder={this.props.placeholder}
-        value={null}
+        
+        value={this.props.value}
       />
     );
   }

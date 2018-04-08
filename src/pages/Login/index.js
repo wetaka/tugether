@@ -1,4 +1,5 @@
 import React from "react";
+import { Actions } from "react-native-router-flux";
 import { View, Text, Image, Dimensions, TouchableOpacity } from "react-native";
 import TULogo from "../../Images/Logo.png";
 import CustomInput from "../../components/CustomInput";
@@ -9,43 +10,21 @@ const { width } = Dimensions.get("window");
 // Wi Login an
 class Login extends React.Component {
   state = {
-    username: "",
+    userid: "",
     password: ""
   };
 
   login(){
-    alert('in login')
-    fetch('http://172.19.0.1:8000/api/login',{
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userid:this.state.username,
-            firstname:this.state.password
-
-            // topic: this.state.topic,
-            // date: this.state.date,
-            // time: this.state.time,
-            // place: this.state.place,
-            // contact: this.state.contact,
-            // description: this.state.description
-
-          }),
-    })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        // this.state = {isLoading: false  };
-        console.log('vinaja', responseJson)
-        alert("Success")
-        // this.setState({
-        //   isLoading: false,
-        //   dataSource: responseJson.movies,
-        // });
-        
-        // alert(this.state.isLoading)
-
+    alert('http://172.25.79.95:8000/api/chk-first-login/'+this.state.userid)
+    fetch('http://172.25.79.95:8000/api/chk-first-login/'+this.state.userid)
+      .then((response) => {
+        if (response.ok) {
+          alert("Not First Login");
+          
+        } else {
+          alert("First Login");
+          Actions.Category({ userid: this.state.userid });
+        }
       })
       .catch((error) =>{
         console.error(error);
@@ -79,9 +58,9 @@ class Login extends React.Component {
               keyboardType="numeric"
               secureTextEntry={false}
               onChangeText={text => {
-                this.setState({ username: text });
+                this.setState({ userid: text });
               }}
-              value={this.state.username}
+              value={this.state.userid}
             />
           </View>
 
@@ -109,6 +88,7 @@ class Login extends React.Component {
                 //   String a = "test1";
                 //   String b = "test b";
                 //   System.out.print('a is:' + a);
+                // alert(this.state.userid)
                  this.login()
               }}
             >
