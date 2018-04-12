@@ -22,6 +22,16 @@ const categories = [
     { text: 'Sport12' },
 ]
 
+const firstname = "Piyawadee"
+const lastname = "Ekkukkararungroj"
+const major = "Computer Science"
+const department = "Science and Technology"
+const nation = "Thai"
+const title = "Miss"
+const year = "4"
+const age = 21
+const active = true
+
 class Category extends React.Component {
     state = {
         category: [],
@@ -40,26 +50,161 @@ class Category extends React.Component {
                 isSelect: false,
             };
         });
-    }    
+    }
 
 
     getCategories() {
-        fetch('http://172.25.79.95:8000/api/category')
-            .then((response) => response.json())
-            .then((data) => {
-                console.log('get categories', data)
-                this.setState({ category: this.setCategoriesWithSelect(data) });
-                console.log(this.props.userid)
-            })
-            .catch((error) => {
-                console.error(error);
-                alert("Fail")
-            });
+        return new Promise((resolve, reject) => {
+            return fetch('http://172.25.79.95:8000/api/category')
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log('get categories', data)
+                    this.setState(
+                        { category: this.setCategoriesWithSelect(data) },
+                        () => { resolve(); }
+                    );
+                    console.log(this.props.userid)
+                })
+                .catch((error) => {
+                    console.error(error);
+                    alert("Fail");
+                    reject();
+                });
+        });
     }
 
-    firstcategory(){
-        
+    addUser() {
+        return new Promise((resolve, reject) => {
+            return fetch('http://172.25.79.95:8000/api/user', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userid: "" + this.props.userid,
+                    firstname: "" + firstname,
+                    lastname: "" + lastname,
+                    major: "" + major,
+                    department: "" + department,
+                    nation: "" + nation,
+                    title: "" + title,
+                    year: "" + year,
+                    age: age,
+                    active: active
+
+                }),
+
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    console.log('vinaja', responseJson)
+                    // this.getidofuser()
+                    // this.addfirstcategory()
+
+                    resolve();
+                })
+                .catch((error) => {
+                    console.error(error);
+                    reject();
+                });
+        });
     }
+
+    addFavCategory(category) {
+        return new Promise((resolve, reject) => {
+
+            if (category.isSelect === true) {
+
+                const body = {
+                    categoryname: "" + category.categoryname,
+                    categorydetails: "" + category.categorydetails,
+                    userid: [
+                        ...category.userid,
+                        "" + this.props.userid
+                    ],
+                    active: category.active
+
+                };
+
+                if (category.eventid.length !== 0) {
+                    body.eventid = [...category.eventid];
+                }
+
+                fetch('http://172.25.79.95:8000/api/category/' + category.id, {
+                    method: 'PUT',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(body),
+
+                })
+
+                    .then((response) => response.json())
+                    .then((responseJson) => {
+                        console.log('vinaja', responseJson)
+
+                        resolve()
+                    })
+                    .catch((error) => {
+                        console.error(error);
+
+                        reject()
+                    });
+            }
+            else {
+                resolve()
+            }
+        })
+    }
+
+    // getCategories() {
+    //     fetch('http://172.25.79.95:8000/api/category')
+    //         .then((response) => response.json())
+    //         .then((data) => {
+    //             console.log('get categories', data)
+    //             this.setState({ category: this.setCategoriesWithSelect(data) });
+    //             console.log(this.props.userid)
+    //         })
+    //         .catch((error) => {
+    //             console.error(error);
+    //             alert("Fail")
+    //         });
+    // }
+
+    // firstcategory(index) {
+    //     fetch('http://172.25.79.95:8000/api/user', {
+    //         method: 'POST',
+    //         headers: {
+    //             Accept: 'application/json',
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify({
+    //             userid: "" + this.props.userid,
+    //             firstname: "" + firstname,
+    //             lastname: "" + lastname,
+    //             major: "" + major,
+    //             department: "" + department,
+    //             nation: "" + nation,
+    //             title: "" + title,
+    //             year: "" + year,
+    //             age: age,
+    //             active: active
+
+    //         }),
+
+    //     })
+    //         .then((response) => response.json())
+    //         .then((responseJson) => {
+    //             console.log('vinaja', responseJson)
+    //             // this.getidofuser()
+    //             // this.addfirstcategory()
+    //         })
+    //         .catch((error) => {
+    //             console.error(error);
+    //         });
+    // }
 
 
     toggleSelect(index) {
@@ -76,6 +221,41 @@ class Category extends React.Component {
             category: newCate,
         });
     }
+
+    // addfirstcategory() {
+    //     this.state.category.map((c) => {
+    //         if (c.isSelect == true) {
+    //             fetch('http://172.25.79.95:8000/api/category/' + c.id, {
+    //                 method: 'PUT',
+    //                 headers: {
+    //                     Accept: 'application/json',
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //                 body: JSON.stringify({
+
+    //                     categoryname: ""+c.categoryname,
+    //                     categorydetails: ""+c.categorydetails,
+    //                     userid: [""+c.userid,
+    //                     ""+this.props.userid
+    //                     ],
+    //                     eventid: [""+c.eventid],
+    //                     active: c.active
+
+    //             }),
+
+    //         })
+
+    //                 .then((response) => response.json())
+    //                 .then((responseJson) => {
+    //                     console.log('vinaja', responseJson)
+    //                 })
+    //                 .catch((error) => {
+    //                     console.error(error);
+    //                 });
+    //         }
+    //     })
+    // }
+
 
     render() {
 
@@ -107,30 +287,49 @@ class Category extends React.Component {
 
 
                     <View style={{ paddingVertical: 10 }}>
-                        <TouchableOpacity
-                            style={{
-                                backgroundColor: "#ae5945",
-                                padding: 15,
-                                borderRadius: 15,
-                                alignItems: "center"
-                            }}
-                            onPress={() => {
-                                //   String a = "test1";
-                                //   String b = "test b";
-                                //   System.out.print('a is:' + a);
-                                // alert(this.state.username)
-                                // this.login()
+                        <View style={{ paddingVertical: 10 }}>
+                            <TouchableOpacity
+                                style={{
+                                    backgroundColor: "#ae5945",
+                                    padding: 15,
+                                    borderRadius: 15,
+                                    alignItems: "center"
+                                }}
+                                onPress={() => {
+                                    //   String a = "test1";
+                                    //   String b = "test b";
+                                    //   System.out.print('a is:' + a);
+                                    // alert(this.state.username)
+                                    // this.login()
 
-                                this.firstcategory()
-                            }}
-                        >
-                            <Text style={{ color: "white", fontSize: 20 }}>
-                                OK
-                             </Text>
-                        </TouchableOpacity>
+                                    this.addUser()
+                                        .then(() => {
+                                            // const actions = this.state.category.map(c => this.addFavCategory(c));
+                                            // const actions = this.state.category.map(c => 5);
+                                            // console.log(actions);
+                                            return Promise.all(this.state.category.map(c => this.addFavCategory(c)));
+                                        })
+                                        .then(() => {
+                                            alert('All Success');
+                                            Actions.Home({userid: this.props.userid});
+
+                                        })
+                                        .catch((error) => {
+                                            console.error(error);
+                                            alert('Not Success');
+
+                                        });
+
+
+
+                                }}
+                            >
+                                <Text style={{ color: "white", fontSize: 20 }}>
+                                    OK
+                                     </Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-
-
 
                 </View>
             </ScrollView>

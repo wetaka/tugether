@@ -19,7 +19,7 @@ import HomeIcon from '../../Images/homeicon.png';
 import NotiIcon from '../../Images/notiicon.png';
 import ProfileIcon from '../../Images/profileicon.png';
 import FindIcon from '../../Images/findicon.png';
-
+import Footer from "../../components/Footer";
 
 const { width, height } = Dimensions.get('window');
 
@@ -110,61 +110,50 @@ class Main extends React.Component {
             </View>
           </View>
         </View>
-          <View>
-            <View style={{ paddingVertical:7, flexDirection: 'row', justifyContent: 'space-around', backgroundColor: 'white' }}>
-              <View>
-                <Text style={{ fontSize: 25,fontWeight:'bold' }}>5709650179</Text>
-                <Text style={{ fontSize: 20 }}>พัชต์วรินทรา วงศ์ฉัตรทอง</Text>
-              </View>
-              <Image source={Kaimook} style={{ alignSelf: 'flex-start', width: 90, height: 90 }} />
+        <View>
+          <View style={{ paddingVertical: 7, flexDirection: 'row', justifyContent: 'space-around', backgroundColor: 'white' }}>
+            <View>
+              <Text style={{ fontSize: 25, fontWeight: 'bold' }}>5709650179</Text>
+              <Text style={{ fontSize: 20 }}>พัชต์วรินทรา วงศ์ฉัตรทอง</Text>
             </View>
-            <View style={{ flexDirection: 'row' }}>
-              <TouchableOpacity style={{ backgroundColor: '#ae5945', paddingVertical: 10, flex: 1, alignItems: 'center' }}>
-                <Text style={{ color: 'white' }}>
-                  My Post
-              </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={{ backgroundColor: '#ae5945', paddingVertical: 10, flex: 1, alignItems: 'center' }}>
-                <Text style={{ color: 'white' }}>
-                  Up Coming
-              </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={{ backgroundColor: '#ae5945', paddingVertical: 10, flex: 1, alignItems: 'center' }}>
-                <Text style={{ color: 'white' }}>
-                  History
-              </Text>
-              </TouchableOpacity>
-            </View>
+            <Image source={Kaimook} style={{ alignSelf: 'flex-start', width: 90, height: 90 }} />
           </View>
-          <FlatList
-            data={posters}
-            renderItem={({ item }) => this.renderPost(item)}
-            numColumns={2}
-          />
-          <View style={{ flexDirection: 'column', height: 55 }}>
-
-            <Image source={Buttonbar}
-              style={{ position: 'absolute', width: '100%', height: 55, resizeMode: 'stretch' }}
-            />
-
-            <View style={{ flexDirection: 'row' }}>
-              <View style={{ height: 55, flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'row' }}>
-                <Image source={HomeIcon} style={{ width: '20%', height: '50%' }} />
-                {/* <Text style={{ fontSize: 20 }}>  Home </Text> */}
-              </View>
-
-              <View style={{ height: 55, flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'row' }}>
-                <Image source={NotiIcon} style={{ width: '20%', height: '50%' }} />
-                {/* <Text style={{ fontSize: 20 }}>  Notification </Text> */}
-              </View>
-
-              <View style={{ height: 55, flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'row' }}>
-                <Image source={ProfileIcon} style={{ width: '20%', height: '50%' }} />
-                {/* <Text style={{ fontSize: 20 }}>  Profile </Text> */}
-              </View>
-            </View>
+          <View style={{ flexDirection: 'row' }}>
+            <TouchableOpacity style={{ backgroundColor: '#ae5945', paddingVertical: 10, flex: 1, alignItems: 'center' }}>
+              <Text style={{ color: 'white' }}>
+                My Post
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ backgroundColor: '#ae5945', paddingVertical: 10, flex: 1, alignItems: 'center' }}>
+              <Text style={{ color: 'white' }}>
+                Up Coming
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ backgroundColor: '#ae5945', paddingVertical: 10, flex: 1, alignItems: 'center' }}>
+              <Text style={{ color: 'white' }}>
+                History
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
+        <FlatList
+          data={posters}
+          renderItem={({ item }) => this.renderPost(item)}
+          numColumns={2}
+        />
+        <View style={{ flexDirection: 'column', height: 55 }}>
+
+          <Image source={Buttonbar}
+            style={{ position: 'absolute', width: '100%', height: 55, resizeMode: 'stretch' }}
+          />
+
+          <View >
+            <Footer
+              pm={this.props.userid}
+            />
+          </View>
+        </View>
+      </View>
     )
   }
 }

@@ -22,7 +22,7 @@ export default class App extends React.Component {
           <Scene key='Description' hideNavBar component={Description} />
           <Scene key='Joined' hideNavBar component={Joined}/>
           <Scene key='CreateEvent'hideNavBar component={CreateEvent}/>
-          <Scene key='Home' hideNavBar component={Home}/>
+          <Scene key='Home' hideNavBar component={Home}  initial={true}/>
           <Scene key='Main' hideNavBar component={Main}  />
         </Stack>
         

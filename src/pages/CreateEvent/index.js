@@ -8,6 +8,7 @@ import HomeIcon from '../../Images/homeicon.png';
 import NotiIcon from '../../Images/notiicon.png';
 import ProfileIcon from '../../Images/profileicon.png';
 import FindIcon from '../../Images/findicon.png';
+import Footer from "../../components/Footer";
 
 const { width, height } = Dimensions.get('window');
 
@@ -18,7 +19,7 @@ const { width, height } = Dimensions.get('window');
 //   });
 
 
-  /////////////////////////////test///////////////////////////////////
+/////////////////////////////test///////////////////////////////////
 const options = {
     title: 'Select Avatar',
     customButtons: [
@@ -28,12 +29,12 @@ const options = {
         skipBackup: true,
         path: 'images'
     }
-    
+
 };
 
 class CreateEvent extends React.Component {
 
-    
+
     state = {
         avatarSource: posterFrame,
         topic: '..',
@@ -59,38 +60,38 @@ class CreateEvent extends React.Component {
     //     console.warn('Cannot open date picker', message);
     //   }
 
-    saveEvent(){
-        fetch('http://172.25.88.97:8000/api/user',{
+    saveEvent() {
+        fetch('http://172.25.88.97:8000/api/user', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                userid:"5709650069",
-                    topic: "last",
-                    join: [
-                        1
-                    ],
-                    createby: 1,
-                    location: "สนามศุภชลาศัยจ้าาาา",
-                    approve: "2",
-                    description: "งานฟุตบอลประเพณี ค่าบัตรราคา 100,200,400 บาท ซื้อบัตรได้ที่ศูนย์หนังสือธรรมศาสตร์ มี bnk นะจ้ะงานนี้ ",
-                    facebook: "CUTU football",
-                    line: "line",
-                    web: "web",
-                    phone: "08527800003",
-                    hashtag: "#cututraditional#football#ฟุตบอลประเพณี",
-                    bcapprove: "-",
-                    posterpic: "l",
-                    createdate: "2018-03-26T04:03:01.559000Z",
-                    updatedate: "2018-03-26T04:03:01.559000Z",
-                    startdate: "2018-03-26T04:03:01.559000Z",
-                    enddate: "2018-03-26T04:03:01.559000Z",
-                    eventstdate: "2018-03-26T04:03:01.559000Z",
-                    eventenddate: "2018-03-26T04:03:01.559000Z",
-                    active: true,
-                    limited: 100,
+            },
+            body: JSON.stringify({
+                userid: "5709650069",
+                topic: "last",
+                join: [
+                    1
+                ],
+                createby: 1,
+                location: "สนามศุภชลาศัยจ้าาาา",
+                approve: "2",
+                description: "งานฟุตบอลประเพณี ค่าบัตรราคา 100,200,400 บาท ซื้อบัตรได้ที่ศูนย์หนังสือธรรมศาสตร์ มี bnk นะจ้ะงานนี้ ",
+                facebook: "CUTU football",
+                line: "line",
+                web: "web",
+                phone: "08527800003",
+                hashtag: "#cututraditional#football#ฟุตบอลประเพณี",
+                bcapprove: "-",
+                posterpic: "l",
+                createdate: "2018-03-26T04:03:01.559000Z",
+                updatedate: "2018-03-26T04:03:01.559000Z",
+                startdate: "2018-03-26T04:03:01.559000Z",
+                enddate: "2018-03-26T04:03:01.559000Z",
+                eventstdate: "2018-03-26T04:03:01.559000Z",
+                eventenddate: "2018-03-26T04:03:01.559000Z",
+                active: true,
+                limited: 100,
 
                 // topic: this.state.topic,
                 // date: this.state.date,
@@ -99,29 +100,29 @@ class CreateEvent extends React.Component {
                 // contact: this.state.contact,
                 // description: this.state.description
 
-              }),
+            }),
         })
-          .then((response) => response.json())
-          .then((responseJson) => {
-            // this.state = {isLoading: false  };
-            console.log('vinaja', responseJson)
-            
-            // this.setState({
-            //   isLoading: false,
-            //   dataSource: responseJson.movies,
-            // });
-            
-            // alert(this.state.isLoading)
-    
-          })
-          .catch((error) =>{
-            console.error(error);
-          });
+            .then((response) => response.json())
+            .then((responseJson) => {
+                // this.state = {isLoading: false  };
+                console.log('vinaja', responseJson)
+
+                // this.setState({
+                //   isLoading: false,
+                //   dataSource: responseJson.movies,
+                // });
+
+                // alert(this.state.isLoading)
+
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     }
 
-    componentDidMount(){
+    componentDidMount() {
         // fetch('https://facebook.github.io/react-native/movies.json')
-       
+
     }
 
     chooseImage() {
@@ -153,13 +154,13 @@ class CreateEvent extends React.Component {
         return (
             <View style={{ flex: 1 }}>
                 <Search
-                        ref="search_box"
-                        /**
-                         * There many props that can customizable
-                        * Please scroll down to Props section
+                    ref="search_box"
+                    /**
+                     * There many props that can customizable
+                    * Please scroll down to Props section
 
-                        */
-                        backgroundColor="orange"
+                    */
+                    backgroundColor="orange"
 
 
                 />
@@ -193,13 +194,13 @@ class CreateEvent extends React.Component {
 
                             <View style={{ flexDirection: 'row' }}>
                                 <View style={{ alignItems: 'flex-end' }}>
-                                    <Text style={{marginBottom:16, fontSize: 20 }}>Topic:   </Text>
-                                    <Text style={{marginBottom:16, fontSize: 20 }}>Date:   </Text>
-                                    <Text style={{marginBottom:16, fontSize: 20 }}>Time:   </Text>
-                                    <Text style={{marginBottom:16, fontSize: 20 }}>Place:   </Text>
-                                    <Text style={{marginBottom:16, fontSize: 20 }}>Contact:   </Text>
-                                    <Text style={{marginBottom:16, fontSize: 20 }}>Description:   </Text>  
-                            </View>
+                                    <Text style={{ marginBottom: 16, fontSize: 20 }}>Topic:   </Text>
+                                    <Text style={{ marginBottom: 16, fontSize: 20 }}>Date:   </Text>
+                                    <Text style={{ marginBottom: 16, fontSize: 20 }}>Time:   </Text>
+                                    <Text style={{ marginBottom: 16, fontSize: 20 }}>Place:   </Text>
+                                    <Text style={{ marginBottom: 16, fontSize: 20 }}>Contact:   </Text>
+                                    <Text style={{ marginBottom: 16, fontSize: 20 }}>Description:   </Text>
+                                </View>
 
                                 <View>
                                     <TextInput
@@ -265,30 +266,10 @@ class CreateEvent extends React.Component {
                         </View>
                     </View>
                 </ScrollView>
-                <View style={{ flexDirection: 'column', height: 55 }}>
-
-                    <Image source={Buttonbar}
-                        style={{ position: 'absolute', width: '100%', height: 55, resizeMode: 'stretch' }}
+                <View >
+                    <Footer
+                        pm={this.props.userid}
                     />
-
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={{ height: 55, flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'row' }}>
-                            <Image source={HomeIcon} style={{ width: '20%', height: '50%' }} />
-                            {/* <Text style={{ fontSize: 20 }}>  Home </Text> */}
-                        </View>
-
-                        <View style={{ height: 55, flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'row' }}>
-                            <Image source={NotiIcon} style={{ width: '20%', height: '50%' }} />
-                            {/* <Text style={{ fontSize: 20 }}>  Notification </Text> */}
-                        </View>
-
-                        <View style={{ height: 55, flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'row' }}>
-                            <Image source={ProfileIcon} style={{ width: '20%', height: '50%' }} />
-                            {/* <Text style={{ fontSize: 20 }}>  Profile </Text> */}
-                        </View>
-
-                        
-                    </View>
                 </View>
             </View >
         )

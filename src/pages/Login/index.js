@@ -1,10 +1,12 @@
 import React from "react";
 import { Actions } from "react-native-router-flux";
-import { View, Text, Image, Dimensions, TouchableOpacity } from "react-native";
+import { View, Text, Image, Dimensions, TouchableOpacity, AsyncStorage } from "react-native";
 import TULogo from "../../Images/Logo.png";
 import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
 import Bg from "../../Images/bg.jpg";
+
+
 const { width } = Dimensions.get("window");
 
 // Wi Login an
@@ -14,23 +16,28 @@ class Login extends React.Component {
     password: ""
   };
 
-  login(){
-    alert('http://172.25.79.95:8000/api/chk-first-login/'+this.state.userid)
-    fetch('http://172.25.79.95:8000/api/chk-first-login/'+this.state.userid)
+
+ 
+
+  login() {
+    alert('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
+    fetch('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
       .then((response) => {
         if (response.ok) {
           alert("Not First Login");
-          
+          Actions.Home({ userid: this.state.userid });
+
+
         } else {
           alert("First Login");
           Actions.Category({ userid: this.state.userid });
         }
       })
-      .catch((error) =>{
+      .catch((error) => {
         console.error(error);
         alert("Fail")
       });
-    }
+  }
   render() {
     return (
       <View
@@ -70,7 +77,7 @@ class Login extends React.Component {
               keyboardType="numeric"
               secureTextEntry={true}
               onChangeText={text => {
-                
+
                 this.setState({ password: text });
               }}
               value={this.state.password}
@@ -89,7 +96,7 @@ class Login extends React.Component {
                 //   String b = "test b";
                 //   System.out.print('a is:' + a);
                 // alert(this.state.userid)
-                 this.login()
+                this.login()
               }}
             >
               <Text style={{ color: "white", fontSize: 20 }}>
