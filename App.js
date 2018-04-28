@@ -8,6 +8,8 @@ import Joined from './src/pages/Joined'
 import CreateEvent from './src/pages/CreateEvent'
 import Home from './src/pages/Home'
 import Main from './src/pages/Main'
+import LogOut from './src/pages/LogOut';
+import Notificate from './src/pages/Notificate';
 
 
 
@@ -24,6 +26,8 @@ export default class App extends React.Component {
           <Scene key='CreateEvent'hideNavBar component={CreateEvent}/>
           <Scene key='Home' hideNavBar component={Home}  initial={true}/>
           <Scene key='Main' hideNavBar component={Main}  />
+          <Scene key='Main' hideNavBar component={Notificate}  />
+          <Scene key='Main' hideNavBar component={LogOut}  />
         </Stack>
         
       </Router>
