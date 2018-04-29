@@ -23,7 +23,9 @@ class SearchBox extends Component {
     this.state = {
       keyword: '',
       expanded: false,
+      height: new Animated.Value(0)
     };
+
     const { width } = Dimensions.get('window');
     this.contentWidth = width;
     this.middleWidth = width / 2;
@@ -60,7 +62,7 @@ class SearchBox extends Component {
      */
     this.placeholder = this.props.placeholder || 'Search';
     this.cancelTitle = this.props.cancelTitle || 'Cancel';
-    this.autoFocus =  this.props.autoFocus || false;
+    this.autoFocus = this.props.autoFocus || false;
 
     /**
      * Shadow
@@ -72,8 +74,8 @@ class SearchBox extends Component {
   }
 
   componentDidMount() {
-    if(this.autoFocus) {
-      this.setState({expanded: true})
+    if (this.autoFocus) {
+      this.setState({ expanded: true })
       this.refs.input_keyword._component.focus();
 
     }
@@ -111,11 +113,19 @@ class SearchBox extends Component {
    */
   onChangeText = async text => {
     await this.setState({ keyword: text });
+    const { keyword } = this.state;
+    const { autoCompleteWords } = this.props;
     await new Promise((resolve, reject) => {
-      Animated.timing(this.iconDeleteAnimated, {
-        toValue: text.length > 0 ? 1 : 0,
-        duration: 200
-      }).start(() => resolve());
+      Animated.parallel([
+        Animated.timing(this.iconDeleteAnimated, {
+          toValue: text.length > 0 ? 1 : 0,
+          duration: 200
+        }),
+        Animated.timing(this.state.height, {
+          toValue: keyword.length === 0 ? 0 : autoCompleteWords.length * 30 ,
+          duration: 300
+        })
+      ]).start(() => resolve());
     });
     this.props.onChangeText &&
       (await this.props.onChangeText(this.state.keyword));
@@ -153,10 +163,16 @@ class SearchBox extends Component {
   onDelete = async () => {
     this.props.beforeDelete && (await this.props.beforeDelete());
     await new Promise((resolve, reject) => {
-      Animated.timing(this.iconDeleteAnimated, {
-        toValue: 0,
-        duration: 200
-      }).start(() => resolve());
+      Animated.parallel([
+        Animated.timing(this.iconDeleteAnimated, {
+          toValue: 0,
+          duration: 200
+        }),
+        Animated.timing(this.state.height, {
+          toValue: 0,
+          duration: 300
+        })
+      ]).start(() => resolve());
     });
     await this.setState({ keyword: '' });
     this.props.onDelete && (await this.props.onDelete());
@@ -225,15 +241,15 @@ class SearchBox extends Component {
         }).start(),
         this.props.keyboardShouldPersist === false
           ? Animated.timing(this.inputFocusPlaceholderAnimated, {
-              toValue: this.middleWidth - this.props.placeholderCollapsedMargin,
-              duration: 200
-            }).start()
+            toValue: this.middleWidth - this.props.placeholderCollapsedMargin,
+            duration: 200
+          }).start()
           : null,
         this.props.keyboardShouldPersist === false || isForceAnim === true
           ? Animated.timing(this.iconSearchAnimated, {
-              toValue: this.middleWidth - this.props.searchIconCollapsedMargin,
-              duration: 200
-            }).start()
+            toValue: this.middleWidth - this.props.searchIconCollapsedMargin,
+            duration: 200
+          }).start()
           : null,
         Animated.timing(this.iconDeleteAnimated, {
           toValue: 0,
@@ -242,6 +258,10 @@ class SearchBox extends Component {
         Animated.timing(this.shadowOpacityAnimated, {
           toValue: this.props.shadowOpacityCollapsed,
           duration: 200
+        }).start(),
+        Animated.timing(this.state.height, {
+          toValue: 0,
+          duration: 300
         }).start()
       ]);
       this.shadowHeight = this.props.shadowOffsetHeightCollapsed;
@@ -253,83 +273,84 @@ class SearchBox extends Component {
     const isRtl = this.props.direction === 'rtl';
     const styles = getStyles(this.props.inputHeight, isRtl);
     return (
-      <Animated.View
-        ref="searchContainer"
-        style={[
-          styles.container,
-          this.props.backgroundColor && {
-            backgroundColor: this.props.backgroundColor
-          }
-        ]}
-        onLayout={this.onLayout}
-      >
-        <AnimatedTextInput
-          ref="input_keyword"
+      <View>
+        <Animated.View
+          ref="searchContainer"
           style={[
-            styles.input,
-            this.props.placeholderTextColor && {
-              color: this.props.placeholderTextColor
-            },
-            this.props.inputStyle && this.props.inputStyle,
-            this.props.inputHeight && { height: this.props.inputHeight },
-            this.props.inputBorderRadius && {
-              borderRadius: this.props.inputBorderRadius
-            },
-            {
-              width: this.inputFocusWidthAnimated,
-              [isRtl ? 'paddingRight' : 'paddingLeft']: this.inputFocusPlaceholderAnimated
-            },
-            this.props.shadowVisible && {
-              shadowOffset: {
-                width: this.props.shadowOffsetWidth,
-                height: this.shadowHeight
-              },
-              shadowColor: this.props.shadowColor,
-              shadowOpacity: this.shadowOpacityAnimated,
-              shadowRadius: this.props.shadowRadius
+            styles.container,
+            this.props.backgroundColor && {
+              backgroundColor: this.props.backgroundColor
             }
           ]}
-          editable={this.props.editable}
-          value={this.state.keyword}
-          onChangeText={this.onChangeText}
-          placeholder={this.placeholder}
-          placeholderTextColor={
-            this.props.placeholderTextColor || styles.placeholderColor
-          }
-          selectionColor={this.props.selectionColor}
-          onSubmitEditing={this.onSearch}
-          autoCorrect={false}
-          blurOnSubmit={this.props.blurOnSubmit}
-          returnKeyType={this.props.returnKeyType || 'search'}
-          keyboardType={this.props.keyboardType || 'default'}
-          autoCapitalize={this.props.autoCapitalize}
-          onFocus={this.onFocus}
-          underlineColorAndroid="transparent"
-        />
-        <TouchableWithoutFeedback onPress={this.onFocus}>
-        {this.props.iconSearch
-          ? <Animated.View
-              style={[styles.iconSearch, { left: this.iconSearchAnimated }]}
-            >
-              {this.props.iconSearch}
-            </Animated.View>
-          : <Animated.Image
-              source={require('../../Images/search.png')}
-              style={[
-                styles.iconSearch,
-                styles.iconSearchDefault,
-                this.props.tintColorSearch && {
-                  tintColor: this.props.tintColorSearch
+          onLayout={this.onLayout}
+        >
+          <AnimatedTextInput
+            ref="input_keyword"
+            style={[
+              styles.input,
+              this.props.placeholderTextColor && {
+                color: this.props.placeholderTextColor
+              },
+              this.props.inputStyle && this.props.inputStyle,
+              this.props.inputHeight && { height: this.props.inputHeight },
+              this.props.inputBorderRadius && {
+                borderRadius: this.props.inputBorderRadius
+              },
+              {
+                width: this.inputFocusWidthAnimated,
+                [isRtl ? 'paddingRight' : 'paddingLeft']: this.inputFocusPlaceholderAnimated
+              },
+              this.props.shadowVisible && {
+                shadowOffset: {
+                  width: this.props.shadowOffsetWidth,
+                  height: this.shadowHeight
                 },
-                {
-                  left: this.iconSearchAnimated
-                }
-              ]}
-            />}
+                shadowColor: this.props.shadowColor,
+                shadowOpacity: this.shadowOpacityAnimated,
+                shadowRadius: this.props.shadowRadius
+              }
+            ]}
+            editable={this.props.editable}
+            value={this.state.keyword}
+            onChangeText={this.onChangeText}
+            placeholder={this.placeholder}
+            placeholderTextColor={
+              this.props.placeholderTextColor || styles.placeholderColor
+            }
+            selectionColor={this.props.selectionColor}
+            onSubmitEditing={this.onSearch}
+            autoCorrect={false}
+            blurOnSubmit={this.props.blurOnSubmit}
+            returnKeyType={this.props.returnKeyType || 'search'}
+            keyboardType={this.props.keyboardType || 'default'}
+            autoCapitalize={this.props.autoCapitalize}
+            onFocus={this.onFocus}
+            underlineColorAndroid="transparent"
+          />
+          <TouchableWithoutFeedback onPress={this.onFocus}>
+            {this.props.iconSearch
+              ? <Animated.View
+                style={[styles.iconSearch, { left: this.iconSearchAnimated }]}
+              >
+                {this.props.iconSearch}
+              </Animated.View>
+              : <Animated.Image
+                source={require('../../Images/search.png')}
+                style={[
+                  styles.iconSearch,
+                  styles.iconSearchDefault,
+                  this.props.tintColorSearch && {
+                    tintColor: this.props.tintColorSearch
+                  },
+                  {
+                    left: this.iconSearchAnimated
+                  }
+                ]}
+              />}
           </TouchableWithoutFeedback>
-        {this.props.useClearButton && <TouchableWithoutFeedback onPress={this.onDelete}>
-          {this.props.iconDelete
-            ? <Animated.View
+          {this.props.useClearButton && <TouchableWithoutFeedback onPress={this.onDelete}>
+            {this.props.iconDelete
+              ? <Animated.View
                 style={[
                   styles.iconDelete,
                   this.props.positionRightDelete && {
@@ -340,7 +361,7 @@ class SearchBox extends Component {
               >
                 {this.props.iconDelete}
               </Animated.View>
-            : <Animated.Image
+              : <Animated.Image
                 source={require('../../Images/delete.png')}
                 style={[
                   styles.iconDelete,
@@ -354,32 +375,43 @@ class SearchBox extends Component {
                   { opacity: this.iconDeleteAnimated }
                 ]}
               />}
-        </TouchableWithoutFeedback>}
+          </TouchableWithoutFeedback>}
 
-        <TouchableOpacity onPress={this.onCancel}>
-          <Animated.View
-            style={[
-              styles.cancelButton,
-              this.props.cancelButtonStyle && this.props.cancelButtonStyle,
-              this.props.cancelButtonViewStyle && this.props.cancelButtonViewStyle,
-              { [isRtl ? 'right' : 'left']: this.btnCancelAnimated },
-            ]}
-          >
-            <Text
+          <TouchableOpacity onPress={this.onCancel}>
+            <Animated.View
               style={[
-                styles.cancelButtonText,
-                this.props.titleCancelColor && {
-                  color: this.props.titleCancelColor
-                },
+                styles.cancelButton,
                 this.props.cancelButtonStyle && this.props.cancelButtonStyle,
-                this.props.cancelButtonTextStyle && this.props.cancelButtonTextStyle,
+                this.props.cancelButtonViewStyle && this.props.cancelButtonViewStyle,
+                { [isRtl ? 'right' : 'left']: this.btnCancelAnimated },
               ]}
             >
-              {this.cancelTitle}
-            </Text>
-          </Animated.View>
-        </TouchableOpacity>
-      </Animated.View>
+              <Text
+                style={[
+                  styles.cancelButtonText,
+                  this.props.titleCancelColor && {
+                    color: this.props.titleCancelColor
+                  },
+                  this.props.cancelButtonStyle && this.props.cancelButtonStyle,
+                  this.props.cancelButtonTextStyle && this.props.cancelButtonTextStyle,
+                ]}
+              >
+                {this.cancelTitle}
+              </Text>
+            </Animated.View>
+          </TouchableOpacity>
+        </Animated.View>
+        <Animated.View
+          style={{ backgroundColor: 'yellow', zIndex: 500, position: 'absolute', top: 40, width: '100%', height: this.state.height }}>
+          {
+            this.props.autoCompleteWords.map((word) => (
+              <Text style={{ color: 'blue', height: 30 }}>
+                {word}
+              </Text>
+            ))
+          }
+        </Animated.View>
+      </View>
     );
   }
 }
@@ -387,7 +419,7 @@ class SearchBox extends Component {
 const getStyles = (inputHeight, isRtl) => {
   let middleHeight = 20
   if (typeof inputHeight == 'number')
-  middleHeight = (10 + inputHeight) / 2;
+    middleHeight = (10 + inputHeight) / 2;
 
   return {
     container: {

@@ -116,7 +116,7 @@ class ListCategory extends React.PureComponent {
 
 
 const styles = StyleSheet.create({
-    iconStyle:{padding:10, paddingTop: 15, width:140 ,backgroundColor: 'red', flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'column' },
+    iconStyle:{padding:10, paddingTop: 15, width:140 ,backgroundColor: 'red', alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'column' },
     textStyle:{fontSize: 15, alignSelf: 'center' },
 
   })

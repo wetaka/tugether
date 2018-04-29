@@ -68,6 +68,14 @@ class Home extends React.Component {
       firstname: "",
       lastname: ""
     },
+    searchword: "",
+    words : [
+      'abc',
+      'ade',
+      'aaaa',
+      'ant',
+      'armmy'
+    ],
     isSelectCategory: 0,
     maxSize: 0,
     event: []
@@ -168,9 +176,17 @@ class Home extends React.Component {
   }
 
 
-  searchEvent(text) {
+  searchEvent() {
+    let { searchword } = this.state
     return new Promise((resolve, reject) => {
-      return fetch(API_URL+'search-event/' + text +'/'+ this.state.isSelectCategory)
+      let text = ""
+      if(searchword != null){
+        text = "?searchword=" + searchword
+      }
+      else{
+        text = "" 
+      }
+      return fetch(API_URL+'search-event/'+ this.state.isSelectCategory+""+text)
         .then((response) => response.json())
         .then((data) => {
           console.log("fixbug Search then 1")
@@ -263,7 +279,11 @@ class Home extends React.Component {
 
         <SearchBox
           ref='search_box'
-          onSearch={text => this.searchEvent(text)}
+          onSearch={() => this.searchEvent()}
+          autoCompleteWords={this.state.words}
+          onChangeText={text => this.setState({searchword : text})}
+          onCancel={() => this.setState({ searchword: '' })}
+          onDelete={() => this.setState({ searchword: '' })}
         />
 
         <ListCategory
