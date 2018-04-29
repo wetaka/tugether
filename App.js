@@ -17,13 +17,15 @@ export default class App extends React.Component {
       <Router>
 
         <Stack key='root'>
-          <Scene key='Login' hideNavBar component={Login}  initial={true} />
+          <Scene key='Login' hideNavBar component={Login} />
           <Scene key='Category' hideNavBar component={Category}   />
-          <Scene key='Description' hideNavBar component={Description} />
-          <Scene key='Joined' hideNavBar component={Joined}/>
-          <Scene key='CreateEvent'hideNavBar component={CreateEvent}/>
-          <Scene key='Home' hideNavBar component={Home}  initial={true}/>
+          <Scene key='Description' hideNavBar component={Description}   />
+          <Scene key='Joined' hideNavBar component={Joined}   />
+          <Scene key='CreateEvent'hideNavBar component={CreateEvent}  initial={true} />
+          <Scene key='Home' hideNavBar component={Home} initial={true}/>
           <Scene key='Main' hideNavBar component={Main}  />
+          {/* <Scene key='Notificate' hideNavBar component={Notificate}  /> */}
+          
         </Stack>
         
       </Router>

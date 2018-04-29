@@ -35,6 +35,7 @@ ADDED from C:\Users\lenovo\Desktop\tugether\android\app\src\main\AndroidManifest
 uses-sdk
 ADDED from C:\Users\lenovo\Desktop\tugether\android\app\src\main\AndroidManifest.xml:11:5-13:41
 MERGED from [tugether:react-native-image-picker:unspecified] C:\Users\lenovo\Desktop\tugether\android\app\build\intermediates\exploded-aar\tugether\react-native-image-picker\unspecified\AndroidManifest.xml:7:5-9:41
+MERGED from [tugether:react-native-vector-icons:unspecified] C:\Users\lenovo\Desktop\tugether\android\app\build\intermediates\exploded-aar\tugether\react-native-vector-icons\unspecified\AndroidManifest.xml:7:5-9:41
 MERGED from [com.facebook.react:react-native:0.50.3] C:\Users\lenovo\Desktop\tugether\android\app\build\intermediates\exploded-aar\com.facebook.react\react-native\0.50.3\AndroidManifest.xml:7:5-9:41
 MERGED from [com.android.support:appcompat-v7:23.0.1] C:\Users\lenovo\Desktop\tugether\android\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.0.1\AndroidManifest.xml:20:5-43
 MERGED from [com.android.support:support-v4:23.0.1] C:\Users\lenovo\Desktop\tugether\android\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\AndroidManifest.xml:20:5-43

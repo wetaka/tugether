@@ -1,10 +1,11 @@
 import React from "react";
 import { Actions } from "react-native-router-flux";
-import { View, Text, Image, Dimensions, TouchableOpacity, AsyncStorage } from "react-native";
+import { View, Text, Image, Dimensions, TouchableOpacity, AsyncStorage , StyleSheet} from "react-native";
 import TULogo from "../../Images/Logo.png";
 import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
 import Bg from "../../Images/bg.jpg";
+import { API_URL } from "../../config/api";
 
 
 const { width } = Dimensions.get("window");
@@ -20,8 +21,11 @@ class Login extends React.Component {
  
 
   login() {
-    alert('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
-    fetch('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
+    //alert('http://192.168.1.11:8000/api/chk-first-login/' + this.state.userid)
+    // fetch('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
+    fetch(API_URL+'chk-first-login/' + this.state.userid)
+
+    
       .then((response) => {
         if (response.ok) {
           alert("Not First Login");
@@ -41,22 +45,16 @@ class Login extends React.Component {
   render() {
     return (
       <View
-        style={{ flexDirection: "column", backgroundColor: "white", flex: 1 }}
+        style={styles.viewStyle}
       >
         <Image
           source={Bg}
-          style={{
-            flexDirection: "column",
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            resizeMode: "stretch"
-          }}
+          style={styles.bgStyle}
         />
         <View style={{ padding: 30, paddingTop: 0 }}>
           <Image
             source={TULogo}
-            style={{ maxWidth: width - 100, alignSelf: "center" }}
+            style={styles.tulogo}
             ImageResizeMode="repeat"
           />
           <View style={{ paddingVertical: 10 }}>
@@ -85,12 +83,7 @@ class Login extends React.Component {
           </View>
           <View style={{ paddingVertical: 10 }}>
             <TouchableOpacity
-              style={{
-                backgroundColor: "#ae5945",
-                padding: 15,
-                borderRadius: 15,
-                alignItems: "center"
-              }}
+              style={styles.btnLogin}
               onPress={() => {
                 //   String a = "test1";
                 //   String b = "test b";
@@ -99,7 +92,7 @@ class Login extends React.Component {
                 this.login()
               }}
             >
-              <Text style={{ color: "white", fontSize: 20 }}>
+              <Text style={styles.loginText}>
                 Login via authen app
               </Text>
             </TouchableOpacity>
@@ -109,5 +102,23 @@ class Login extends React.Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+
+  bgStyle: {flexDirection: "column", position: "absolute", width: "100%", height: "100%",resizeMode: "stretch"},
+  tulogo: { maxWidth: width - 100, alignSelf: "center" },
+  btnLogin: {backgroundColor: "#ae5945",padding: 15,borderRadius: 15,alignItems: "center"},
+  loginText: { color: "white", fontSize: 20 },
+  viewStyle:{ flexDirection: "column", backgroundColor: "white", flex: 1 }
+  // scrollStyle: {flexDirection: 'column', backgroundColor: "white", flex: 1},
+  // viewChooseImg: {flexDirection: 'row', alignItems: 'center', justifyContent: 'center'},
+  // imgStyle: {alignSelf: 'flex-start', width: 200, height: 200 },
+  // desStyle: {marginBottom: 16, fontSize: 20},
+  // viewBtn: {flexDirection: 'column', height: 55, width: '100%' },
+  // topicStyle: { height: 50, borderColor: 'gray', borderWidth: 2, width: 180, height: 40 },
+  // setBtnStyle: {backgroundColor: '#ae5945', padding: 15, borderRadius: 15, alignItems: 'center'},
+  // setTextStyle: { color: 'white', fontSize: 20 },
+  // setTxtIn: { height: 50, borderColor: 'gray', borderWidth: 2, width: 180, height: 40 },
+})
 
 export default Login;

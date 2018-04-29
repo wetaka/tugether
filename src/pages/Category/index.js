@@ -1,11 +1,12 @@
 import React from "react";
 import { Actions } from "react-native-router-flux";
-import { View, Text, Image, Dimensions, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, Image, Dimensions, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import TULogo from "../../Images/Logo.png";
 import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
 import Bg from "../../Images/bg.jpg";
 const { width } = Dimensions.get("window");
+import {API_URL} from "../../config/api"; 
 
 const categories = [
     { text: 'Sport1' },
@@ -55,7 +56,7 @@ class Category extends React.Component {
 
     getCategories() {
         return new Promise((resolve, reject) => {
-            return fetch('http://172.25.79.95:8000/api/category')
+            return fetch(API_URL+'category')
                 .then((response) => response.json())
                 .then((data) => {
                     console.log('get categories', data)
@@ -75,7 +76,7 @@ class Category extends React.Component {
 
     addUser() {
         return new Promise((resolve, reject) => {
-            return fetch('http://172.25.79.95:8000/api/user', {
+            return fetch(API_URL+'user', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -131,7 +132,7 @@ class Category extends React.Component {
                     body.eventid = [...category.eventid];
                 }
 
-                fetch('http://172.25.79.95:8000/api/category/' + category.id, {
+                fetch(API_URL+'category/' + category.id, {
                     method: 'PUT',
                     headers: {
                         Accept: 'application/json',
@@ -222,45 +223,11 @@ class Category extends React.Component {
         });
     }
 
-    // addfirstcategory() {
-    //     this.state.category.map((c) => {
-    //         if (c.isSelect == true) {
-    //             fetch('http://172.25.79.95:8000/api/category/' + c.id, {
-    //                 method: 'PUT',
-    //                 headers: {
-    //                     Accept: 'application/json',
-    //                     'Content-Type': 'application/json',
-    //                 },
-    //                 body: JSON.stringify({
-
-    //                     categoryname: ""+c.categoryname,
-    //                     categorydetails: ""+c.categorydetails,
-    //                     userid: [""+c.userid,
-    //                     ""+this.props.userid
-    //                     ],
-    //                     eventid: [""+c.eventid],
-    //                     active: c.active
-
-    //             }),
-
-    //         })
-
-    //                 .then((response) => response.json())
-    //                 .then((responseJson) => {
-    //                     console.log('vinaja', responseJson)
-    //                 })
-    //                 .catch((error) => {
-    //                     console.error(error);
-    //                 });
-    //         }
-    //     })
-    // }
-
 
     render() {
 
         return (
-            <ScrollView style={{ flexDirection: 'column', backgroundColor: "white", flex: 1 }}>
+            <ScrollView style={styles.scrollStyle}>
                 <View>
 
                     {this.state.category.map((c, index) => (
@@ -276,7 +243,7 @@ class Category extends React.Component {
                                     this.toggleSelect(index)
                                 }}
                             >
-                                <Text style={{ color: "white", fontSize: 20 }}>
+                                <Text style={styles.categoryStyle}>
                                     {c.categoryname}
                                 </Text>
                             </TouchableOpacity>
@@ -289,12 +256,7 @@ class Category extends React.Component {
                     <View style={{ paddingVertical: 10 }}>
                         <View style={{ paddingVertical: 10 }}>
                             <TouchableOpacity
-                                style={{
-                                    backgroundColor: "#ae5945",
-                                    padding: 15,
-                                    borderRadius: 15,
-                                    alignItems: "center"
-                                }}
+                                style={styles.buttonStyle}
                                 onPress={() => {
                                     //   String a = "test1";
                                     //   String b = "test b";
@@ -336,5 +298,14 @@ class Category extends React.Component {
         );
     }
 }
+
+
+const styles = StyleSheet.create({
+    //flexDirection: 'column', backgroundColor: "white", flex: 1 
+    scrollStyle: {flexDirection: 'column', backgroundColor: "white", flex: 1 },
+    buttonStyle: {backgroundColor: "#ae5945",padding: 15,borderRadius: 15,alignItems: "center"},
+    categoryStyle: {color: "white", fontSize: 20}
+})
+
 
 export default Category;

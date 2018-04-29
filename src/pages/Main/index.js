@@ -8,6 +8,8 @@ import {
   TextInput,
   ScrollView,
   FlatList,
+  AsyncStorage,
+  StyleSheet
 } from 'react-native';
 import imgposter1 from '../../Images/poster1.jpg'
 import imgposter2 from '../../Images/poster2.jpg'
@@ -20,6 +22,9 @@ import NotiIcon from '../../Images/notiicon.png';
 import ProfileIcon from '../../Images/profileicon.png';
 import FindIcon from '../../Images/findicon.png';
 import Footer from "../../components/Footer";
+import { Actions } from "react-native-router-flux";
+import SearchHeader from "../../components/SearchHeader";
+import {API_URL} from "../../config/api"; 
 
 const { width, height } = Dimensions.get('window');
 
@@ -32,119 +37,254 @@ const posters = [
     date: '16',
     img: location,
     place: 'Gym 5',
-  },
-  {
-    id: '12345556',
-    imgposter: imgposter2,
-    name: 'Life Dream Journey',
-    month: 'AUG',
-    date: '1',
-    img: location,
-    place: 'ศูนย์ประชุม',
-  },
-  {
-    id: '12345557',
-    imgposter: imgposter2,
-    name: 'Life Dream Journey',
-    month: 'AUG',
-    date: '1',
-    img: location,
-    place: 'ศูนย์ประชุม',
-  },
-  {
-    id: '12345557',
-    imgposter: imgposter2,
-    name: 'Life Dream Journey',
-    month: 'AUG',
-    date: '1',
-    img: location,
-    place: 'ศูนย์ประชุม',
   }
 ]
 
 
-
 class Main extends React.Component {
+
+
+  state = {
+    user: {
+      userid: "",
+      firstname: "",
+      lastname: ""
+    },
+
+    event: []
+  };
+
+
+
   renderPost(item) {
-    console.log('--------- tert')
-    console.log('===> ', item)
-    console.log(item)
+    // console.log('--------- tert')
+    // console.log('===> ', item.eventid)
+    // console.log(item)
     return (
-      <View style={{ borderWidth: 2, borderColor: 'gray', width: '50%' }}>
-        <Image source={item.imgposter} style={{ alignSelf: 'flex-start', width: '100%', height: 300 }} />
-        <Text style={{ fontSize: 20, alignSelf: 'center' }}>{item.name}</Text>
-        <Text style={{ fontSize: 20 }}>___________________</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ fontSize: 15 }}>{item.month}</Text>
-            <Text style={{ fontSize: 15 }}>{item.date}</Text>
-          </View>
-          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-            <Image source={line} style={{ alignSelf: 'flex-start' }} />
-            <View>
-              <Image source={item.img} style={{ alignSelf: 'center', width: 30, height: 30 }} />
-              <Text style={{ fontSize: 15 }}>{item.place}</Text>
+
+
+      <View style={styles.btnItem}>
+        <TouchableOpacity
+          onPress={() => {
+            //   String a = "test1";
+            //   String b = "test b";
+            //   System.out.print('a is:' + a);
+            // alert(this.state.userid)
+
+            Actions.Description({ eventid: item.id });
+          }}>
+          <Image source={imgposter1} style={styles.posterImg } />
+          <Text style={styles.topicStyle}>{item.topic}</Text>
+          <Text style={{ fontSize: 20 }}>___________________</Text>
+          <View style={styles.desStyle}>
+            <View style={styles.stdStyle}>
+              <Text style={{ fontSize: 15 }}>{item.startdate}</Text>
+              {/* <Text style={{ fontSize: 15 }}>{item.date}</Text> */}
+            </View>
+            <View style={styles.imgLine}>
+              <Image source={line} style={{ alignSelf: 'flex-start' }} />
+              <View>
+                <Image source={location} style={ styles.imgLocation} />
+                <Text style={{ fontSize: 15 }}>{item.location}</Text>
+              </View>
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
       </View>
+
     )
   }
 
 
+  getCurrentUser() {
+    console.log("getCurrentUser")
+
+    return AsyncStorage.getItem('CURRENT_USER')
+      .then(value => {
+        value = JSON.parse(value);
+        console.log('value   ', value);
+        if (value) {
+          // We have data!!
+
+          this.setState({
+            user: {
+              userid: value.userid,
+              firstname: value.firstname,
+              lastname: value.lastname
+            }
+          }, () => { this.getYourEvent() });
+          ////////////////////WIP////////////////
+
+        }
+        else {
+
+          Actions.Login();
+        }
+      })
+      .catch(() => { console.log('eiei error') })
+  }
+
+
+  getUpcomingEvent() {
+    // alert('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
+     fetch(API_URL+'upcoming-event/' + this.state.user.userid)
+    // fetch('http://192.168.1.4:8000/api/upcoming-event/' + this.state.user.userid)
+    
+
+      // 'upcoming-event/<str:userid>'
+
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('get eventid from upcoming event', data)
+        this.setState({
+          event: [...data]
+
+        }, () => { console.log("test state upcoming", this.state) });
+        //console.log(this.props.eventid)
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("Fail");
+      });
+  }
+
+
+  getYourEvent() {
+    // alert('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
+    fetch(API_URL+'get-your-event/' + this.state.user.userid)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('get your eventid', data)
+        this.setState({
+          event: [...data]
+
+        }, () => { console.log("test state get your event", this.state) });
+        //console.log(this.props.eventid)
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("Fail");
+      });
+  }
+
+
+  getPastEvent() {
+    // alert('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
+    fetch(API_URL+'past-event/' + this.state.user.userid)
+
+      // 'upcoming-event/<str:userid>'
+
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('get eventid from past event', data)
+        this.setState({
+          event: [...data]
+
+        }, () => { console.log("test state past", this.state) });
+        //console.log(this.props.eventid)
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("Fail");
+      });
+  }
+
+  // fordateDate() {
+
+  // }
+
+
+  componentDidMount() {
+    this.getCurrentUser();
+
+    // console.log("componentWillMount Main");
+
+  }
+
   render() {
+
+    const { user } = this.state;
+
     return (
 
       <View style={{ flex: 1 }}>
 
-        <View style={{ flexDirection: 'column', height: 55, width: '100%' }}>
-
-          <Image source={Buttonbar}
-            style={{ position: 'absolute', width: '100%', height: 55, resizeMode: 'stretch' }}
+        <View style={styles.searchView}>
+          <SearchHeader
+            isMainPage={true}
           />
-
-          <View style={{ flexDirection: 'row', flex: 1 }}>
-            <View style={{ height: 55, flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'row' }}>
-              <TextInput style={{ fontSize: 20, flex: 1 }} placeholder="Search" />
-              <Image source={FindIcon} style={{ width: '20%', height: '100%', alignItems: 'flex-end', justifyContent: 'flex-end' }} />
-            </View>
-          </View>
         </View>
+
         <View>
-          <View style={{ paddingVertical: 7, flexDirection: 'row', justifyContent: 'space-around', backgroundColor: 'white' }}>
+          <View style={styles.userStyle}>
             <View>
-              <Text style={{ fontSize: 25, fontWeight: 'bold' }}>5709650179</Text>
-              <Text style={{ fontSize: 20 }}>พัชต์วรินทรา วงศ์ฉัตรทอง</Text>
+              <Text style={styles.userIDsty}> {user.userid} </Text>
+              <Text style={{ fontSize: 20 }}> {user.firstname} {user.lastname} </Text>
             </View>
-            <Image source={Kaimook} style={{ alignSelf: 'flex-start', width: 90, height: 90 }} />
+            <Image source={Kaimook} style={styles.imgUser} />
           </View>
           <View style={{ flexDirection: 'row' }}>
-            <TouchableOpacity style={{ backgroundColor: '#ae5945', paddingVertical: 10, flex: 1, alignItems: 'center' }}>
+            
+            <TouchableOpacity
+              style={styles.btnEvent}
+              onPress={() => {
+                //   String a = "test1";
+                //   String b = "test b";
+                //   System.out.print('a is:' + a);
+                // alert(this.state.userid)
+                this.getYourEvent()
+              }}
+            >
               <Text style={{ color: 'white' }}>
                 My Post
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{ backgroundColor: '#ae5945', paddingVertical: 10, flex: 1, alignItems: 'center' }}>
+            <TouchableOpacity
+              style={{
+                backgroundColor: '#ae5945',
+                paddingVertical: 10,
+                flex: 1,
+                alignItems: 'center'
+              }}
+              onPress={() => {
+                //   String a = "test1";
+                //   String b = "test b";
+                //   System.out.print('a is:' + a);
+                // alert(this.state.userid)
+                this.getUpcomingEvent()
+              }}
+            >
               <Text style={{ color: 'white' }}>
                 Up Coming
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{ backgroundColor: '#ae5945', paddingVertical: 10, flex: 1, alignItems: 'center' }}>
+            <TouchableOpacity 
+            style={styles.btnEvent}
+              onPress={() => {
+                //   String a = "test1";
+                //   String b = "test b";
+                //   System.out.print('a is:' + a);
+                // alert(this.state.userid)
+                this.getPastEvent()
+              }}
+              >
               <Text style={{ color: 'white' }}>
                 History
               </Text>
             </TouchableOpacity>
           </View>
         </View>
+
+
         <FlatList
-          data={posters}
+          data={this.state.event}
           renderItem={({ item }) => this.renderPost(item)}
           numColumns={2}
         />
-        <View style={{ flexDirection: 'column', height: 55 }}>
+        <View style={styles.buttonView}>
 
           <Image source={Buttonbar}
-            style={{ position: 'absolute', width: '100%', height: 55, resizeMode: 'stretch' }}
+            style={styles.buttonBar}
           />
 
           <View >
@@ -157,5 +297,29 @@ class Main extends React.Component {
     )
   }
 }
+
+
+const styles = StyleSheet.create({
+  btnItem:{ borderWidth: 2, borderColor: 'gray', width: '50%' },
+
+
+  buttonBar: { position: 'absolute', width: '100%', height: 55, resizeMode: 'stretch' },
+  posterImg: { alignSelf: 'flex-start', width: '100%', height: 300 },
+  topicStyle: {fontSize: 20, alignSelf: 'center'},
+  desStyle:{flexDirection: 'row', alignItems: 'center' },
+  stdStyle:{flex: 1, justifyContent: 'center', alignItems: 'center'},
+  imgLine:{flex: 1, flexDirection: 'row', alignItems: 'center' },
+  imgLocation:{alignSelf: 'center', width: 30, height: 30 },
+  posterStyle:{borderWidth: 2, borderColor: 'gray', width: '50%' },
+  searchView:{flexDirection: 'column', height: 55, width: '100%' },
+  buttonView: {flexDirection: 'column', height: 55 },
+  userStyle:{ paddingVertical: 7, flexDirection: 'row', justifyContent: 'space-around', backgroundColor: 'white' },
+  userIDsty:{ fontSize: 25, fontWeight: 'bold' },
+  imgUser:{ alignSelf: 'flex-start', width: 90, height: 90 },
+  btnEvent:{backgroundColor: '#ae5945',paddingVertical: 10,flex: 1,alignItems: 'center'},
+
+
+})
+
 
 export default Main;
