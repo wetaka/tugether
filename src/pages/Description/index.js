@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Image, Dimensions, TouchableOpacity, TextInput, ScrollView, StyleSheet } from 'react-native';
+import { Text, View, Image, Dimensions, TouchableOpacity, TextInput, ScrollView, FlatList, StyleSheet, AsyncStorage } from 'react-native';
 import poster from '../../Images/poster1.jpg'
 import facebook from '../../Images/facebook.png'
 import CustomInput from '../../components/CustomInput';
@@ -13,6 +13,38 @@ const { width, height } = Dimensions.get('window');
 import SearchHeader from "../../components/SearchHeader";
 import { API_URL } from "../../config/api";
 import { Transition } from 'react-navigation-fluid-transitions';
+
+
+const commentAll = [
+    {
+        eventid: 1,
+        createby: "5709650278",
+        details: "kkkkkkkkkkkkkk",
+        createdate: "2018-05-03T17:07:34.233056Z",
+        active: true
+    },
+    {
+        eventid: 2,
+        createby: "5709650278",
+        details: "BBBBBBBBBBBB",
+        createdate: "2018-05-03T17:07:34.233056Z",
+        active: true
+    },
+    {
+        eventid: 3,
+        createby: "5709650278",
+        details: "AAAAAAAAAAAAAAA",
+        createdate: "2018-05-03T17:07:34.233056Z",
+        active: true
+    },
+    {
+        eventid: 4,
+        createby: "5709650278",
+        details: "LLLLLLLLLLLLLLLL",
+        createdate: "2018-05-03T17:07:34.233056Z",
+        active: true
+    },
+]
 
 class Description extends React.Component {
 
@@ -41,17 +73,24 @@ class Description extends React.Component {
             active: true,
             limited: 0
         },
+        user: {
+            userid: "",
+            firstname: "",
+            lastname: ""
+        },
+        commentstr: ""
     };
 
     getEvent() {
         // alert('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
-        fetch(API_URL + 'event/' + this.props.navigation.state.params.eventid)
+        // fetch(API_URL + 'event/' + this.props.navigation.state.params.eventid)
+        fetch(API_URL + 'event/1')
             .then((response) => response.json())
             .then((data) => {
                 console.log('get eventid', data)
                 this.setState({
                     event: {
-                        eventid: "" + data.eventid,
+                        eventid: data.eventid,
                         topic: "" + data.topic,
                         createby: "" + data.createby,
                         categoryid: [...data.categoryid],
@@ -84,11 +123,87 @@ class Description extends React.Component {
             });
     }
 
-
-    componentWillMount() {
-        this.getEvent();
+    getCurrentUser() {
+        return AsyncStorage.getItem('CURRENT_USER')
+            .then(value => {
+                value = JSON.parse(value);
+                if (value) {
+                    // We have data!!
+                    console.log(value);
+                    // this.getAllEventActive();
+                    this.setState({
+                        user: {
+                            userid: value.userid,
+                            firstname: value.firstname,
+                            lastname: value.lastname
+                        }
+                    })
+                    ////////////////////WIP////////////////
+                    console.log("Test CurrentUser")
+                    console.log(this.state.user.userid)
+                }
+                else {
+                    // Actions.Login();
+                    this.props.navigation.navigate('Login')
+                }
+            })
     }
 
+
+    addComment(commentstr) {
+        fetch(API_URL + 'comment', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                eventid: 1,
+                createby: this.state.user.userid,
+                details: "" + this.state.commentstr
+
+            }),
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                console.log('vinaja', responseJson)
+
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    componentWillMount() {
+        this.getCurrentUser();
+        this.getEvent();
+
+    }
+
+
+    renderPost(item) {
+        console.log(item)
+        const dayitem = new Date(item.createdate)
+
+        return (
+            
+            <View style={{ borderWidth: 2, borderColor: 'gray', width: '100%' }}>
+                    {/* {console.log(poster.name)} */}
+                    {/* <Text style={{ fontSize: 20 }}>___________________</Text> */}
+                    {/* /<Text style={{ fontSize: 20 }}>__________________________________</Text> */}
+                    <View style={styles.desStyle}>
+                        <Text style={styles.topicStyle}>{item.createby}</Text>
+                        <View style={styles.stdStyle}>
+                            <Text style={{ fontSize: 15 }}>{dayitem.getDate()}/{dayitem.getMonth()}/{dayitem.getFullYear()} {dayitem.getHours()}:{dayitem.getMinutes()}:{dayitem.getMilliseconds()}</Text>
+                        </View>
+                        <Text style={{ fontSize: 15 }}>{item.details}</Text>
+
+                        {/* <Text style={{ fontSize: 20 }}>__________________________________</Text> */}
+                    </View>
+                
+            </View>
+        )
+    }
 
     render() {
 
@@ -98,14 +213,14 @@ class Description extends React.Component {
 
                 <View style={styles.searchStyle}>
                     <SearchHeader
-                    // pm={this.props.userid} 
+                    // pm={this.props.userid}  
                     />
                 </View>
 
                 <ScrollView style={styles.scrollStyle}>
                     <View>
                         <Transition shared='circle'>
-                        {/* <Transition shared={this.props.navigation.state.params.eventid}> */}
+                            {/* <Transition shared={this.props.navigation.state.params.eventid}> */}
                             {/* <Image source={imgposter1}
                                 style={styles.posterImg} /> */}
                             <Image source={poster} style={styles.posterStyle} ImageResizeMode="repeat" />
@@ -123,29 +238,18 @@ class Description extends React.Component {
                             <Text style={{ fontSize: 15 }}>Description : </Text>
                             <Text style={{ fontSize: 15 }}>{event.description}</Text>
 
-
-                            <View style={styles.txtStyle}>
-                                {/* Input */}
-                                <TextInput
-                                    secureTextEntry={false}
-                                    placeholder="Type your Question here to comment!"
-                                    keyboardType="default"
-                                    style={styles.commentStyle}
-                                    onChangeText={() => { }}
-                                />
-
-                                {/* Button */}
-                                {/* <TouchableOpacity
-                                style={{ backgroundColor: 'grey', padding: 15, borderRadius: 1, alignItems: 'center' }}
-                            >
-                                <Text style={{ color: 'white', fontSize: 30 }}>
-                                    OK
-                                </Text>
-                            </TouchableOpacity> */}
-                            </View>
                         </View>
                     </View>
+
+
+                    <FlatList
+                        data={commentAll}
+                        renderItem={({ item }) => this.renderPost(item)}
+                    />
+
                 </ScrollView>
+
+
                 <View style={{ flexDirection: 'column', height: 55 }}>
 
                     <Image source={Buttonbar}
@@ -153,10 +257,30 @@ class Description extends React.Component {
                     />
 
                     <View >
-                        <Footer
-                            navigate={this.props.navigation.navigate}
-                            pm={(this.props.navigation && this.props.navigation.state && this.props.navigation.state.params && this.props.navigation.state.params.userid) ? this.props.navigation.state.params.userid : null}
-                        />
+                        <View style={styles.txtStyle}>
+                            {/* Input */}
+                            <TextInput
+                                secureTextEntry={false}
+                                placeholder="Type your Question here to comment!"
+                                keyboardType="default"
+                                style={styles.commentStyle}
+                                onChangeText={text => {
+                                    this.setState(
+                                        { commentstr: text }
+                                    )
+                                    console.log(text)
+                                }}
+                            />
+                            {/* Button */}
+                            <TouchableOpacity
+                                style={{ backgroundColor: 'grey', padding: 15, borderRadius: 5, alignItems: 'center' }}
+                                onPress={() => { this.addComment() }}
+                            >
+                                <Text style={{ color: 'white', fontSize: 30 }}>
+                                    OK
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
             </View>
@@ -172,9 +296,9 @@ const styles = StyleSheet.create({
     searchStyle: { flexDirection: 'column', height: 55, width: '100%' },
     fb: { alignSelf: 'flex-start', width: 50, height: 50 },
     txtStyle: { flexDirection: 'row', alignItems: 'center' },
-    commentStyle: { height: 70, borderColor: 'gray', borderWidth: 2, width: '100%', height: 70 },
+    commentStyle: { height: 70, borderColor: 'gray', borderWidth: 2, flex: 1, height: 70, margin: 5 },
     buttonBar: { position: 'absolute', width: '100%', height: 55, resizeMode: 'stretch' },
-    iconView: { flexDirection: 'row', alignItems: 'center' }
+    iconView: { flexDirection: 'row', alignItems: 'center' },
     // scrollStyle: {flexDirection: 'column', backgroundColor: "white", flex: 1},
     // viewChooseImg: {flexDirection: 'row', alignItems: 'center', justifyContent: 'center'},
     // imgStyle: {alignSelf: 'flex-start', width: 200, height: 200 },
@@ -184,6 +308,17 @@ const styles = StyleSheet.create({
     // setBtnStyle: {backgroundColor: '#ae5945', padding: 15, borderRadius: 15, alignItems: 'center'},
     // setTextStyle: { color: 'white', fontSize: 20 },
     // setTxtIn: { height: 50, borderColor: 'gray', borderWidth: 2, width: 180, height: 40 },
+        // buttonBar: { position: 'absolute', width: '100%', height: 55, resizeMode: 'stretch' },
+    // posterImg: { alignSelf: 'flex-start', width: '100%', height: 300 },
+    topicStyle: { fontSize: 20, alignSelf: 'center' },
+    desStyle: { flexDirection: 'row', alignItems: 'center' },
+    stdStyle: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+    imgLine: { flex: 1, flexDirection: 'row', alignItems: 'center' },
+    imgLocation: { alignSelf: 'center', width: 30, height: 30 },
+    // posterStyle: { borderWidth: 2, borderColor: 'gray', width: '50%' },
+    searchView: { flexDirection: 'column', height: 55, width: '100%' },
+    buttonView: { flexDirection: 'column', height: 55 },
+
 })
 
 

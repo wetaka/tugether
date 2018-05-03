@@ -8,14 +8,16 @@ import Joined from './src/pages/Joined'
 import CreateEvent from './src/pages/CreateEvent'
 import Home from './src/pages/Home'
 import Main from './src/pages/Main'
+import MasonryPage from './src/pages/MasonryPage'
 import { FluidNavigator, Transition } from 'react-navigation-fluid-transitions';
 
 
 const Navigator = FluidNavigator({
+  // MasonryPage: { screen: MasonryPage },
+  Description: { screen: Description },
   Home: { screen: Home },
   Login: { screen: Login },
   Category: { screen: Category },
-  Description: { screen: Description },
   Joined: { screen: Joined },
   CreateEvent: { screen: CreateEvent },
   Main: { screen: Main },

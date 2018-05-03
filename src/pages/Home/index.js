@@ -9,7 +9,7 @@ import HomeIcon from '../../Images/homeicon.png';
 import NotiIcon from '../../Images/notiicon.png';
 import ProfileIcon from '../../Images/profileicon.png';
 import FindIcon from '../../Images/findicon.png';
-import { Actions } from "react-native-router-flux";
+// import { Actions } from "react-native-router-flux";
 import Footer from "../../components/Footer";
 import SearchHeader from "../../components/SearchHeader";
 import SearchBox from "../../components/SearchBox";
