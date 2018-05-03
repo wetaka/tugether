@@ -6,7 +6,7 @@ import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
 import Bg from "../../Images/bg.jpg";
 const { width } = Dimensions.get("window");
-import {API_URL} from "../../config/api"; 
+import { API_URL } from "../../config/api";
 
 const categories = [
     { text: 'Sport1' },
@@ -37,6 +37,7 @@ class Category extends React.Component {
     state = {
         category: [],
 
+
     }
 
     componentDidMount() {
@@ -56,7 +57,7 @@ class Category extends React.Component {
 
     getCategories() {
         return new Promise((resolve, reject) => {
-            return fetch(API_URL+'category')
+            return fetch(API_URL + 'category')
                 .then((response) => response.json())
                 .then((data) => {
                     console.log('get categories', data)
@@ -64,7 +65,8 @@ class Category extends React.Component {
                         { category: this.setCategoriesWithSelect(data) },
                         () => { resolve(); }
                     );
-                    console.log(this.props.userid)
+                    const { userid } = this.props.navigation.state.params;
+                    console.log(userid)
                 })
                 .catch((error) => {
                     console.error(error);
@@ -74,16 +76,18 @@ class Category extends React.Component {
         });
     }
 
+
     addUser() {
         return new Promise((resolve, reject) => {
-            return fetch(API_URL+'user', {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    userid: "" + this.props.userid,
+                // console.log("+++++++++++++++++++++++++++++")
+                // console.log(this.state.category)
+                // console.log("----------------------------------------------")
+                // let result = this.state.category.filter(e => e.isSelect === true)
+                // let resultid= result.map(e => e.id)
+                // console.log(resultid)
+                // console.log(...resultid)
+                const body = {
+                    userid: "" + this.props.navigation.state.params.userid,
                     firstname: "" + firstname,
                     lastname: "" + lastname,
                     major: "" + major,
@@ -92,119 +96,82 @@ class Category extends React.Component {
                     title: "" + title,
                     year: "" + year,
                     age: age,
-                    active: active
-
-                }),
-
-            })
-                .then((response) => response.json())
-                .then((responseJson) => {
-                    console.log('vinaja', responseJson)
-                    // this.getidofuser()
-                    // this.addfirstcategory()
-
-                    resolve();
-                })
-                .catch((error) => {
-                    console.error(error);
-                    reject();
-                });
-        });
-    }
-
-    addFavCategory(category) {
-        return new Promise((resolve, reject) => {
-
-            if (category.isSelect === true) {
-
-                const body = {
-                    categoryname: "" + category.categoryname,
-                    categorydetails: "" + category.categorydetails,
-                    userid: [
-                        ...category.userid,
-                        "" + this.props.userid
-                    ],
-                    active: category.active
+                    active: active,
+                    categoryid: resultid
 
                 };
 
-                if (category.eventid.length !== 0) {
-                    body.eventid = [...category.eventid];
-                }
-
-                fetch(API_URL+'category/' + category.id, {
-                    method: 'PUT',
+                return fetch(API_URL + 'user', {
+                    method: 'POST',
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(body),
-
                 })
-
                     .then((response) => response.json())
                     .then((responseJson) => {
                         console.log('vinaja', responseJson)
+                        // this.getidofuser()
+                        // this.addfirstcategory()
 
-                        resolve()
+                        resolve();
                     })
                     .catch((error) => {
                         console.error(error);
-
-                        reject()
+                        reject();
                     });
             }
-            else {
-                resolve()
-            }
-        })
+
+        );
     }
 
-    // getCategories() {
-    //     fetch('http://172.25.79.95:8000/api/category')
-    //         .then((response) => response.json())
-    //         .then((data) => {
-    //             console.log('get categories', data)
-    //             this.setState({ category: this.setCategoriesWithSelect(data) });
-    //             console.log(this.props.userid)
-    //         })
-    //         .catch((error) => {
-    //             console.error(error);
-    //             alert("Fail")
-    //         });
-    // }
+    // addFavCategory(category) {
+    //     return new Promise((resolve, reject) => {
 
-    // firstcategory(index) {
-    //     fetch('http://172.25.79.95:8000/api/user', {
-    //         method: 'POST',
-    //         headers: {
-    //             Accept: 'application/json',
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify({
-    //             userid: "" + this.props.userid,
-    //             firstname: "" + firstname,
-    //             lastname: "" + lastname,
-    //             major: "" + major,
-    //             department: "" + department,
-    //             nation: "" + nation,
-    //             title: "" + title,
-    //             year: "" + year,
-    //             age: age,
-    //             active: active
+    //         if (category.isSelect === true) {
 
-    //         }),
+    //             const body = {
+    //                 categoryname: "" + category.categoryname,
+    //                 categorydetails: "" + category.categorydetails,
+    //                 // userid: [
+    //                 //     ...category.userid,
+    //                 //     "" + this.props.navigation.state.params.userid
+    //                 // ],
+    //                 active: category.active
 
+    //             };
+
+    //             // if (category.eventid.length !== 0) {
+    //             //     body.eventid = [...category.eventid];
+    //             // }
+
+    //             fetch(API_URL + 'category/' + category.id, {
+    //                 method: 'PUT',
+    //                 headers: {
+    //                     Accept: 'application/json',
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //                 body: JSON.stringify(body),
+
+    //             })
+
+    //                 .then((response) => response.json())
+    //                 .then((responseJson) => {
+    //                     console.log('vinaja', responseJson)
+
+    //                     resolve()
+    //                 })
+    //                 .catch((error) => {
+    //                     console.error(error);
+
+    //                     reject()
+    //                 });
+    //         }
+    //         else {
+    //             resolve()
+    //         }
     //     })
-    //         .then((response) => response.json())
-    //         .then((responseJson) => {
-    //             console.log('vinaja', responseJson)
-    //             // this.getidofuser()
-    //             // this.addfirstcategory()
-    //         })
-    //         .catch((error) => {
-    //             console.error(error);
-    //         });
     // }
 
 
@@ -258,22 +225,20 @@ class Category extends React.Component {
                             <TouchableOpacity
                                 style={styles.buttonStyle}
                                 onPress={() => {
-                                    //   String a = "test1";
-                                    //   String b = "test b";
-                                    //   System.out.print('a is:' + a);
-                                    // alert(this.state.username)
-                                    // this.login()
-
+                                   
                                     this.addUser()
-                                        .then(() => {
-                                            // const actions = this.state.category.map(c => this.addFavCategory(c));
-                                            // const actions = this.state.category.map(c => 5);
-                                            // console.log(actions);
-                                            return Promise.all(this.state.category.map(c => this.addFavCategory(c)));
-                                        })
+                                        // .then(() => {
+                                        //     // const actions = this.state.category.map(c => this.addFavCategory(c));
+                                        //     // const actions = this.state.category.map(c => 5);
+                                        //     // console.log(actions);
+                                        //     return Promise.all(this.state.category.map(c => this.addFavCategory(c)));
+                                        // })
                                         .then(() => {
                                             alert('All Success');
-                                            Actions.Home({userid: this.props.userid});
+                                            // Actions.Home({userid: this.props.userid});
+                                            this.props.navigation.navigate('Home', {
+                                                userid: this.props.navigation.state.params.userid
+                                            })
 
                                         })
                                         .catch((error) => {
@@ -302,9 +267,9 @@ class Category extends React.Component {
 
 const styles = StyleSheet.create({
     //flexDirection: 'column', backgroundColor: "white", flex: 1 
-    scrollStyle: {flexDirection: 'column', backgroundColor: "white", flex: 1 },
-    buttonStyle: {backgroundColor: "#ae5945",padding: 15,borderRadius: 15,alignItems: "center"},
-    categoryStyle: {color: "white", fontSize: 20}
+    scrollStyle: { flexDirection: 'column', backgroundColor: "white", flex: 1 },
+    buttonStyle: { backgroundColor: "#ae5945", padding: 15, borderRadius: 15, alignItems: "center" },
+    categoryStyle: { color: "white", fontSize: 20 }
 })
 
 

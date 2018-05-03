@@ -36,7 +36,8 @@ export default class SearchHeader extends Component {
                                     <TouchableOpacity
                                         style={{ width: '20%', height: '100%', alignItems: 'flex-end', justifyContent: 'flex-end' }}
                                         onPress={() => {
-                                            Actions.CreateEvent();
+                                            // Actions.CreateEvent();
+                                            this.props.navigate('CreateEvent')
                                         }}
                                     
                                     >
@@ -53,7 +54,8 @@ export default class SearchHeader extends Component {
                                         style={{ width: '20%', height: '100%', alignItems: 'flex-end', justifyContent: 'flex-end' }}
                                         onPress={() => {
                                             AsyncStorage.setItem('CURRENT_USER', "").then(() => {
-                                                Actions.Login();
+                                                // Actions.Login();
+                                                this.props.navigate('Login')
                                             });
                                         }}
                                     

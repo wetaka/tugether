@@ -17,7 +17,12 @@ export default class Footer extends Component {
       <View style={{ flexDirection: 'row' }}>
         <TouchableOpacity
           style={{ height: 55, flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'row' }}
-          onPress={() => { Actions.Home({ userid: this.props.pm }) }}
+          onPress={() => { 
+            // Actions.Home({ userid: this.props.pm }) 
+            this.props.navigate('Home',{
+              userid: this.props.pm
+            })
+          }}
         >
           <Image source={HomeIcon} style={{ width: '20%', height: '50%' }}
           />
@@ -36,7 +41,12 @@ export default class Footer extends Component {
 
         <TouchableOpacity
           style={{ height: 55, flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'row' }}
-          onPress={() => { Actions.Main({ userid: this.props.pm }) }}
+          onPress={() => { 
+            // Actions.Main({ userid: this.props.pm })
+            this.props.navigate('Main',{
+              userid: this.props.pm
+            })
+          }}
         >
           <Image source={ProfileIcon} style={{ width: '20%', height: '50%' }} />
           {/* <Text style={{ fontSize: 20 }}>  Profile </Text> */}

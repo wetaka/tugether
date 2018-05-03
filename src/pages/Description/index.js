@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Image, Dimensions, TouchableOpacity, TextInput, ScrollView , StyleSheet} from 'react-native';
+import { Text, View, Image, Dimensions, TouchableOpacity, TextInput, ScrollView, StyleSheet } from 'react-native';
 import poster from '../../Images/poster1.jpg'
 import facebook from '../../Images/facebook.png'
 import CustomInput from '../../components/CustomInput';
@@ -11,7 +11,8 @@ import FindIcon from '../../Images/findicon.png';
 import Footer from "../../components/Footer";
 const { width, height } = Dimensions.get('window');
 import SearchHeader from "../../components/SearchHeader";
-import {API_URL} from "../../config/api"; 
+import { API_URL } from "../../config/api";
+import { Transition } from 'react-navigation-fluid-transitions';
 
 class Description extends React.Component {
 
@@ -44,7 +45,7 @@ class Description extends React.Component {
 
     getEvent() {
         // alert('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
-        fetch(API_URL+'event/' + this.props.eventid)
+        fetch(API_URL + 'event/' + this.props.navigation.state.params.eventid)
             .then((response) => response.json())
             .then((data) => {
                 console.log('get eventid', data)
@@ -103,8 +104,12 @@ class Description extends React.Component {
 
                 <ScrollView style={styles.scrollStyle}>
                     <View>
-
-                        <Image source={poster} style={styles.posterStyle} ImageResizeMode="repeat" />
+                        <Transition shared='circle'>
+                        {/* <Transition shared={this.props.navigation.state.params.eventid}> */}
+                            {/* <Image source={imgposter1}
+                                style={styles.posterImg} /> */}
+                            <Image source={poster} style={styles.posterStyle} ImageResizeMode="repeat" />
+                        </Transition>
                         <View style={{ padding: 20 }}>
                             <Text style={{ fontSize: 23 }}>{event.topic}</Text>
                             <Text style={{ fontSize: 15 }}>Date    : {event.startdate}</Text>
@@ -149,7 +154,8 @@ class Description extends React.Component {
 
                     <View >
                         <Footer
-                            pm={this.props.userid}
+                            navigate={this.props.navigation.navigate}
+                            pm={(this.props.navigation && this.props.navigation.state && this.props.navigation.state.params && this.props.navigation.state.params.userid) ? this.props.navigation.state.params.userid : null}
                         />
                     </View>
                 </View>
@@ -178,7 +184,7 @@ const styles = StyleSheet.create({
     // setBtnStyle: {backgroundColor: '#ae5945', padding: 15, borderRadius: 15, alignItems: 'center'},
     // setTextStyle: { color: 'white', fontSize: 20 },
     // setTxtIn: { height: 50, borderColor: 'gray', borderWidth: 2, width: 180, height: 40 },
-  })
+})
 
 
 export default Description;

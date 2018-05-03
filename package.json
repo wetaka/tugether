@@ -27,6 +27,8 @@
     "react-native-responsive-image": "^2.2.0",
     "react-native-router-flux": "^4.0.0-beta.27",
     "react-native-search-box": "0.0.13",
-    "react-native-vector-icons": "^4.6.0"
+    "react-native-vector-icons": "^4.6.0",
+    "react-navigation": "^1.5.11",
+    "react-navigation-fluid-transitions": "^0.1.62"
   }
 }

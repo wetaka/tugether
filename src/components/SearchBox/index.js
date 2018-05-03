@@ -12,6 +12,7 @@ import {
   View,
   ViewPropTypes
 } from 'react-native';
+import { API_URL } from '../../config/api';
 
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 const containerHeight = 40;
@@ -23,7 +24,8 @@ class SearchBox extends Component {
     this.state = {
       keyword: '',
       expanded: false,
-      height: new Animated.Value(0)
+      height: new Animated.Value(0),
+      words: ['kk', 'kkk'],
     };
 
     const { width } = Dimensions.get('window');
@@ -56,6 +58,7 @@ class SearchBox extends Component {
     this.expandAnimation = this.expandAnimation.bind(this);
     this.collapseAnimation = this.collapseAnimation.bind(this);
     this.onLayout = this.onLayout.bind(this);
+    this.getAutoComplete = this.getAutoComplete.bind(this);
 
     /**
      * local variables
@@ -107,6 +110,21 @@ class SearchBox extends Component {
       (await this.props.afterSearch(this.state.keyword));
   };
 
+  getAutoComplete() {
+    return fetch(API_URL + 'get-autowords/' + this.state.keyword + '/' + this.props.isSelectCategory)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Search get data autocomplete', data.data)
+        this.setState({
+          words: data.data
+        }, () => { console.log("test state", this.state) });
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("Fail");
+      });
+  }
+
   /**
    * onChangeText
    * async await
@@ -115,15 +133,22 @@ class SearchBox extends Component {
     await this.setState({ keyword: text });
     const { keyword } = this.state;
     const { autoCompleteWords } = this.props;
+    // Animated.timing(this.state.height, {
+    //   toValue: keyword.length === 0 ? 0 : autoCompleteWords.length * 30 ,
+    //   duration: 300
+    // })
+    if (text) {
+      await this.getAutoComplete()
+      await Animated.timing(this.state.height, {
+        toValue: keyword.length === 0 ? 0 : autoCompleteWords.length * 30 ,
+        duration: 300
+      }).start()
+    }
     await new Promise((resolve, reject) => {
       Animated.parallel([
         Animated.timing(this.iconDeleteAnimated, {
           toValue: text.length > 0 ? 1 : 0,
           duration: 200
-        }),
-        Animated.timing(this.state.height, {
-          toValue: keyword.length === 0 ? 0 : autoCompleteWords.length * 30 ,
-          duration: 300
         })
       ]).start(() => resolve());
     });
@@ -404,7 +429,7 @@ class SearchBox extends Component {
         <Animated.View
           style={{ backgroundColor: 'yellow', zIndex: 500, position: 'absolute', top: 40, width: '100%', height: this.state.height }}>
           {
-            this.props.autoCompleteWords.map((word) => (
+            this.state.words.map((word) => (
               <Text style={{ color: 'blue', height: 30 }}>
                 {word}
               </Text>

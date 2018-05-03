@@ -29,12 +29,18 @@ class Login extends React.Component {
       .then((response) => {
         if (response.ok) {
           alert("Not First Login");
-          Actions.Home({ userid: this.state.userid });
+          this.props.navigation.navigate('Home',{
+            userid: this.state.userid
+          })
+          // Actions.Home({ userid: this.state.userid });
 
 
         } else {
           alert("First Login");
-          Actions.Category({ userid: this.state.userid });
+          // Actions.Category({ userid: this.state.userid });
+          this.props.navigation.navigate('Category',{
+            userid: this.state.userid
+          })
         }
       })
       .catch((error) => {

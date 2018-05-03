@@ -71,9 +71,9 @@ class ListCategory extends React.PureComponent {
 
 
     renderCategories(item) {
-        console.log('--------- tert')
-        console.log('===> ', item)
-        console.log(item)
+        // console.log('--------- tert')
+        // console.log('===> ', item)
+        // console.log(item)
 
         const icon = icons[item.id]
         return (

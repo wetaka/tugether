@@ -89,7 +89,8 @@ class CreateEvent extends React.Component {
                     });
                 }
                 else {
-                    Actions.Login();
+                    // Actions.Login();
+                    this.props.navigation.navigate('Login')
                 }
             })
             .catch(() => { console.log('eiei error') })
@@ -354,7 +355,8 @@ class CreateEvent extends React.Component {
                 </ScrollView>
                 <View >
                     <Footer
-                        pm={this.props.userid}
+                        navigate ={this.props.navigation.navigate}
+                        pm={(this.props.navigation && this.props.navigation.state && this.props.navigation.state.params && this.props.navigation.state.params.userid) ? this.props.navigation.state.params.userid : null}
                     />
                 </View>
             </View >

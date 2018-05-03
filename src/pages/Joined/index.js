@@ -93,7 +93,8 @@ class Joined extends React.Component {
 
                     <View>
                         <Footer
-                            pm={this.props.userid}
+                            navigate ={this.props.navigation.navigate}
+                            pm={(this.props.navigation && this.props.navigation.state && this.props.navigation.state.params && this.props.navigation.state.params.userid) ? this.props.navigation.state.params.userid : null}
                         />
                     </View>
                 </View>

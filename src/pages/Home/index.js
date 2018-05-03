@@ -13,8 +13,9 @@ import { Actions } from "react-native-router-flux";
 import Footer from "../../components/Footer";
 import SearchHeader from "../../components/SearchHeader";
 import SearchBox from "../../components/SearchBox";
-import {API_URL} from "../../config/api"; 
+import { API_URL } from "../../config/api";
 import ListCategory from '../../components/ListCategory';
+import { Transition } from 'react-navigation-fluid-transitions';
 
 // import posterframe from '../../Images/posterframe.jpg'
 const { width, height } = Dimensions.get('window');
@@ -69,20 +70,14 @@ class Home extends React.Component {
       lastname: ""
     },
     searchword: "",
-    words : [
-      'abc',
-      'ade',
-      'aaaa',
-      'ant',
-      'armmy'
-    ],
+    words: [],
     isSelectCategory: 0,
     maxSize: 0,
     event: []
   };
 
 
-  filterCategory(id){
+  filterCategory(id) {
     //alert(id)
     this.setState(
       { isSelectCategory: id },
@@ -94,9 +89,9 @@ class Home extends React.Component {
     console.log('get all Event')
     // alert('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
     //192.168.1.4
-    fetch(API_URL+'event')
-    // fetch('http://172.25.79.95:8000/api/event')
-    
+    fetch(API_URL + 'event')
+      // fetch('http://172.25.79.95:8000/api/event')
+
       .then((response) => response.json())
       .then((data) => {
         console.log('get eventid', data)
@@ -115,13 +110,13 @@ class Home extends React.Component {
 
   getUserByID() {
     return new Promise((resolve, reject) => {
-      return fetch(API_URL+'user/' + this.props.userid)
+      return fetch(API_URL + 'user/' + this.props.navigation.state.params.userid)
         .then((response) => response.json())
         .then((data) => {
           console.log("fixbug getUserByID then 1")
           // this.setState({ category: this.setCategoriesWithSelect(data) });
           return AsyncStorage.setItem('CURRENT_USER', JSON.stringify(data));
-          // console.log(this.props.userid)                      
+          // console.log(this.props.navigation.state.params.userid)                      
         })
         .then(() => {
           console.log("fixbug getUserByID then 2")
@@ -139,10 +134,13 @@ class Home extends React.Component {
   componentWillMount() {
     console.log("fixbug ComponentWillMount jaaaaa")
     if (this.isFromLoginPage()) {
+      console.log("if jaaaaaaaaaaaaaaaaaaaaaa")
       this.getUserByID();
-      console.log("fixbug ComponentWillMount if", this.props.userid)
+
+      console.log("fixbug ComponentWillMount if", this.props.navigation.state.params.userid)
     }
     else {
+      console.log("else jaaaaaaaaaaaaaaaaaaaaaaaa")
       this.getCurrentUser();
       console.log("fixbug ComponentWillMount else")
     }
@@ -159,13 +157,15 @@ class Home extends React.Component {
 
         }
         else {
-          Actions.Login();
+          // Actions.Login();
+          this.props.navigation.navigate('Login')
         }
       })
   }
 
   isFromLoginPage() {
-    return !!this.props.userid
+    console.log('isFromLoginPage', this.props)
+    return !!(this.props.navigation && this.props.navigation.state && this.props.navigation.state.params && this.props.navigation.state.params.userid)
   }
 
 
@@ -180,13 +180,13 @@ class Home extends React.Component {
     let { searchword } = this.state
     return new Promise((resolve, reject) => {
       let text = ""
-      if(searchword != null){
+      if (searchword != null) {
         text = "?searchword=" + searchword
       }
-      else{
-        text = "" 
+      else {
+        text = ""
       }
-      return fetch(API_URL+'search-event/'+ this.state.isSelectCategory+""+text)
+      return fetch(API_URL + 'search-event/' + this.state.isSelectCategory + "" + text)
         .then((response) => response.json())
         .then((data) => {
           console.log("fixbug Search then 1")
@@ -201,7 +201,7 @@ class Home extends React.Component {
           });
           // this.setState({ category: this.setCategoriesWithSelect(data) });
           //return AsyncStorage.setItem('CURRENT_USER', JSON.stringify(data));
-          // console.log(this.props.userid)                      
+          // console.log(this.props.navigation.state.params.userid)                      
         })
         .catch((error) => {
           console.log("fixbug Search catch", error)
@@ -212,52 +212,35 @@ class Home extends React.Component {
   }
 
 
-  // searchEvent(){
-  //   return new Promise((resolve, reject) => {
-  //     return fetch('http://172.25.79.95:8000/api/user/' + this.props.placeholder)
-  //       .then((response) => response.json())
-  //       .then((data) => {
-  //         console.log("fixbug getUserByID then 1")
-  //         // this.setState({ category: this.setCategoriesWithSelect(data) });
-  //         return AsyncStorage.setItem('CURRENT_USER', JSON.stringify(data));
-  //         // console.log(this.props.userid)                      
-  //       })
-  //       .then(() => {
-  //         console.log("fixbug getUserByID then 2")
-
-  //         resolve();
-  //       })
-  //       .catch((error) => {
-  //         console.log("fixbug getUserByID catch", error)
-  //         reject()
-  //       });
-  //   })
-  // }
-
-
   renderPost(item) {
-    console.log('--------- tert')
-    console.log('===> ', item)
-    console.log(item)
+    // console.log('--------- tert')
+    // console.log('===> ', item)
+    // console.log(item)
     return (
-      <View style={styles.posterStyle}>
+      <View style={styles.posterStyle} >
         <TouchableOpacity
           onPress={() => {
 
-            Actions.Description({ eventid: item.id });
+            this.props.navigation.navigate('Description', {
+              eventid: item.id
+            })
+            // Actions.Description({ eventid: item.id });
           }}>
-          <Image source={imgposter1} 
-          style={styles.posterImg } />
-          <Text style={ styles.topicStyle}>{item.topic}</Text>
+          <Transition shared='circle'>
+          {/* <Transition shared={item.id}> */}
+            <Image source={imgposter1}
+              style={styles.posterImg} />
+          </Transition>
+          <Text style={styles.topicStyle}>{item.topic}</Text>
           <Text style={{ fontSize: 20 }}>___________________</Text>
-          <View style={ styles.desStyle }>
+          <View style={styles.desStyle}>
             <View style={styles.stdStyle}>
               <Text style={{ fontSize: 15 }}>{item.startdate}</Text>
             </View>
             <View style={styles.imgLine}>
               <Image source={line} style={{ alignSelf: 'flex-start' }} />
               <View>
-                <Image source={location} style={ styles.imgLocation} />
+                <Image source={location} style={styles.imgLocation} />
                 <Text style={{ fontSize: 15 }}>{item.location}</Text>
               </View>
             </View>
@@ -281,7 +264,12 @@ class Home extends React.Component {
           ref='search_box'
           onSearch={() => this.searchEvent()}
           autoCompleteWords={this.state.words}
-          onChangeText={text => this.setState({searchword : text})}
+          isSelectCategory={this.state.isSelectCategory}
+          onChangeText={text => {
+            this.setState(
+              { searchword: text }
+            )
+          }}
           onCancel={() => this.setState({ searchword: '' })}
           onDelete={() => this.setState({ searchword: '' })}
         />
@@ -298,18 +286,20 @@ class Home extends React.Component {
           renderItem={({ item }) => this.renderPost(item)}
           numColumns={2}
         />
-        
-        
+
+
         <View style={styles.buttonView}>
 
           <Image source={Buttonbar}
             style={styles.buttonBar}
           />
 
-         
+
           <View>
             <Footer
-              pm={this.props.userid}
+              navigate={this.props.navigation.navigate}
+              pm={(this.props.navigation && this.props.navigation.state && this.props.navigation.state.params && this.props.navigation.state.params.userid) ? this.props.navigation.state.params.userid : null}
+            // const { eventid } = this.props.navigation.state.params;
             />
           </View>
         </View>
@@ -321,14 +311,14 @@ class Home extends React.Component {
 const styles = StyleSheet.create({
   buttonBar: { position: 'absolute', width: '100%', height: 55, resizeMode: 'stretch' },
   posterImg: { alignSelf: 'flex-start', width: '100%', height: 300 },
-  topicStyle: {fontSize: 20, alignSelf: 'center'},
-  desStyle:{flexDirection: 'row', alignItems: 'center' },
-  stdStyle:{flex: 1, justifyContent: 'center', alignItems: 'center'},
-  imgLine:{flex: 1, flexDirection: 'row', alignItems: 'center' },
-  imgLocation:{alignSelf: 'center', width: 30, height: 30 },
-  posterStyle:{borderWidth: 2, borderColor: 'gray', width: '50%' },
-  searchView:{flexDirection: 'column', height: 55, width: '100%' },
-  buttonView: {flexDirection: 'column', height: 55 },
+  topicStyle: { fontSize: 20, alignSelf: 'center' },
+  desStyle: { flexDirection: 'row', alignItems: 'center' },
+  stdStyle: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  imgLine: { flex: 1, flexDirection: 'row', alignItems: 'center' },
+  imgLocation: { alignSelf: 'center', width: 30, height: 30 },
+  posterStyle: { borderWidth: 2, borderColor: 'gray', width: '50%' },
+  searchView: { flexDirection: 'column', height: 55, width: '100%' },
+  buttonView: { flexDirection: 'column', height: 55 },
 })
 
 export default Home;

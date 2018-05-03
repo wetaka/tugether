@@ -22,9 +22,11 @@ import NotiIcon from '../../Images/notiicon.png';
 import ProfileIcon from '../../Images/profileicon.png';
 import FindIcon from '../../Images/findicon.png';
 import Footer from "../../components/Footer";
-import { Actions } from "react-native-router-flux";
+// import { Actions } from "react-native-router-flux";
 import SearchHeader from "../../components/SearchHeader";
 import {API_URL} from "../../config/api"; 
+import { Transition } from 'react-navigation-fluid-transitions';
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -50,7 +52,7 @@ class Main extends React.Component {
       firstname: "",
       lastname: ""
     },
-
+    maxSize: 0,
     event: []
   };
 
@@ -71,9 +73,14 @@ class Main extends React.Component {
             //   System.out.print('a is:' + a);
             // alert(this.state.userid)
 
-            Actions.Description({ eventid: item.id });
+            // Actions.Description({ eventid: item.id });
+            this.props.navigation.navigate('Description',{
+              eventid: item.id
+            })
           }}>
-          <Image source={imgposter1} style={styles.posterImg } />
+          <Transition shared='circle'>
+            <Image source={imgposter1} style={styles.posterImg } />
+          </Transition>
           <Text style={styles.topicStyle}>{item.topic}</Text>
           <Text style={{ fontSize: 20 }}>___________________</Text>
           <View style={styles.desStyle}>
@@ -118,7 +125,8 @@ class Main extends React.Component {
         }
         else {
 
-          Actions.Login();
+          // Actions.Login();
+          this.props.navigation.navigate('Login')
         }
       })
       .catch(() => { console.log('eiei error') })
@@ -137,8 +145,8 @@ class Main extends React.Component {
       .then((data) => {
         console.log('get eventid from upcoming event', data)
         this.setState({
-          event: [...data]
-
+          event: [...data.data],
+          maxSize: data.max_size,
         }, () => { console.log("test state upcoming", this.state) });
         //console.log(this.props.eventid)
       })
@@ -156,7 +164,8 @@ class Main extends React.Component {
       .then((data) => {
         console.log('get your eventid', data)
         this.setState({
-          event: [...data]
+          event: [...data.data],
+          maxSize: data.max_size,
 
         }, () => { console.log("test state get your event", this.state) });
         //console.log(this.props.eventid)
@@ -178,7 +187,8 @@ class Main extends React.Component {
       .then((data) => {
         console.log('get eventid from past event', data)
         this.setState({
-          event: [...data]
+          event: [...data.data],
+          maxSize: data.max_size,
 
         }, () => { console.log("test state past", this.state) });
         //console.log(this.props.eventid)
@@ -212,6 +222,7 @@ class Main extends React.Component {
         <View style={styles.searchView}>
           <SearchHeader
             isMainPage={true}
+            navigate ={this.props.navigation.navigate}
           />
         </View>
 
@@ -289,7 +300,8 @@ class Main extends React.Component {
 
           <View >
             <Footer
-              pm={this.props.userid}
+              navigate ={this.props.navigation.navigate}
+              pm={(this.props.navigation && this.props.navigation.state && this.props.navigation.state.params && this.props.navigation.state.params.userid) ? this.props.navigation.state.params.userid : null}
             />
           </View>
         </View>
