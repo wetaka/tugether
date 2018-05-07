@@ -13,7 +13,8 @@ import { FluidNavigator, Transition } from 'react-navigation-fluid-transitions';
 
 
 const Navigator = FluidNavigator({
-  // MasonryPage: { screen: MasonryPage },
+    
+  
   Description: { screen: Description },
   Home: { screen: Home },
   Login: { screen: Login },
@@ -21,6 +22,7 @@ const Navigator = FluidNavigator({
   Joined: { screen: Joined },
   CreateEvent: { screen: CreateEvent },
   Main: { screen: Main },
+  MasonryPage: { screen: MasonryPage },  
   // Notificate: { screen: Notificate }
 })
 // export default class App extends React.Component {

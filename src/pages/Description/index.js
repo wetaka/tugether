@@ -14,37 +14,67 @@ import SearchHeader from "../../components/SearchHeader";
 import { API_URL } from "../../config/api";
 import { Transition } from 'react-navigation-fluid-transitions';
 
+import { Icon } from 'react-native-elements';
 
-const commentAll = [
-    {
-        eventid: 1,
-        createby: "5709650278",
-        details: "kkkkkkkkkkkkkk",
-        createdate: "2018-05-03T17:07:34.233056Z",
-        active: true
-    },
-    {
-        eventid: 2,
-        createby: "5709650278",
-        details: "BBBBBBBBBBBB",
-        createdate: "2018-05-03T17:07:34.233056Z",
-        active: true
-    },
-    {
-        eventid: 3,
-        createby: "5709650278",
-        details: "AAAAAAAAAAAAAAA",
-        createdate: "2018-05-03T17:07:34.233056Z",
-        active: true
-    },
-    {
-        eventid: 4,
-        createby: "5709650278",
-        details: "LLLLLLLLLLLLLLLL",
-        createdate: "2018-05-03T17:07:34.233056Z",
-        active: true
-    },
-]
+
+// const commentAll = [
+//     {
+//         eventid: 1,
+//         createby: "5709650278",
+//         details: "kkkkkkkkkkkkkk",
+//         createdate: "2018-05-03T17:07:34.233056Z",
+//         active: true
+//     },
+//     {
+//         eventid: 2,
+//         createby: "5709650278",
+//         details: "BBBBBBBBBBBB",
+//         createdate: "2018-05-03T17:07:34.233056Z",
+//         active: true
+//     },
+//     {
+//         eventid: 3,
+//         createby: "5709650278",
+//         details: "AAAAAAAAAAAAAAA",
+//         createdate: "2018-05-03T17:07:34.233056Z",
+//         active: true
+//     },
+//     {
+//         eventid: 4,
+//         createby: "5709650278",
+//         details: "LLLLLLLLLLLLLLLL",
+//         createdate: "2018-05-03T17:07:34.233056Z",
+//         active: true
+//     },
+//     {
+//         eventid: 1,
+//         createby: "5709650278",
+//         details: "kkkkkkkkkkkkkk",
+//         createdate: "2018-05-03T17:07:34.233056Z",
+//         active: true
+//     },
+//     {
+//         eventid: 2,
+//         createby: "5709650278",
+//         details: "BBBBBBBBBBBB",
+//         createdate: "2018-05-03T17:07:34.233056Z",
+//         active: true
+//     },
+//     {
+//         eventid: 3,
+//         createby: "5709650278",
+//         details: "AAAAAAAAAAAAAAA",
+//         createdate: "2018-05-03T17:07:34.233056Z",
+//         active: true
+//     },
+//     {
+//         eventid: 4,
+//         createby: "5709650278",
+//         details: "LLLLLLLLLLLLLLLL",
+//         createdate: "2018-05-03T17:07:34.233056Z",
+//         active: true
+//     },
+// ]
 
 class Description extends React.Component {
 
@@ -78,7 +108,8 @@ class Description extends React.Component {
             firstname: "",
             lastname: ""
         },
-        commentstr: ""
+        commentstr: "",
+        comment:[]
     };
 
     getEvent() {
@@ -177,30 +208,44 @@ class Description extends React.Component {
     componentWillMount() {
         this.getCurrentUser();
         this.getEvent();
+        this.getAllComment();
 
     }
 
+    getAllComment() {
+        fetch(API_URL + 'comment-event/1')
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('get comment All', data)
+                this.setState({
+                    comment: data,
+                });
+                
+                console.log(this.state.comment)
+            })
+            .catch((error) => {
+                console.error(error);
+                alert("Fail");
+            });
+    }
 
     renderPost(item) {
         console.log(item)
         const dayitem = new Date(item.createdate)
 
         return (
-            
-            <View style={{ borderWidth: 2, borderColor: 'gray', width: '100%' }}>
-                    {/* {console.log(poster.name)} */}
-                    {/* <Text style={{ fontSize: 20 }}>___________________</Text> */}
-                    {/* /<Text style={{ fontSize: 20 }}>__________________________________</Text> */}
-                    <View style={styles.desStyle}>
-                        <Text style={styles.topicStyle}>{item.createby}</Text>
-                        <View style={styles.stdStyle}>
-                            <Text style={{ fontSize: 15 }}>{dayitem.getDate()}/{dayitem.getMonth()}/{dayitem.getFullYear()} {dayitem.getHours()}:{dayitem.getMinutes()}:{dayitem.getMilliseconds()}</Text>
-                        </View>
-                        <Text style={{ fontSize: 15 }}>{item.details}</Text>
 
-                        {/* <Text style={{ fontSize: 20 }}>__________________________________</Text> */}
-                    </View>
-                
+            <View style={{ borderWidth: 2, borderColor: '#e1dbdb', width: '100%', paddingLeft: 20, paddingTop: 10, paddingBottom: 10 }}>
+
+                <View style={styles.desStyle}>
+                    <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{item.createby}    </Text>
+                    <Text style={{ fontSize: 15 }}>{dayitem.getDate()}/{dayitem.getMonth()}/{dayitem.getFullYear()} {dayitem.getHours()}:{dayitem.getMinutes()}:{dayitem.getMilliseconds()}</Text>
+                </View>
+                <Text style={{ fontSize: 15 }}>{item.details}</Text>
+
+                {/* <Text style={{ fontSize: 20 }}>__________________________________</Text> */}
+
+
             </View>
         )
     }
@@ -241,9 +286,13 @@ class Description extends React.Component {
                         </View>
                     </View>
 
+                    <View style={{ paddingLeft: 10, width: '100%', resizeMode: 'stretch', backgroundColor: '#e1dbdb', paddingVertical: 15, flexDirection: 'row' }}  >
+                        <Icon name='comment-processing' type='material-community' />
+                        <Text style={{ fontSize: 18, fontWeight: 'bold' }}> Comments ({this.state.comment.length})</Text>
+                    </View>
 
                     <FlatList
-                        data={commentAll}
+                        data={this.state.comment}
                         renderItem={({ item }) => this.renderPost(item)}
                     />
 
@@ -296,7 +345,7 @@ const styles = StyleSheet.create({
     searchStyle: { flexDirection: 'column', height: 55, width: '100%' },
     fb: { alignSelf: 'flex-start', width: 50, height: 50 },
     txtStyle: { flexDirection: 'row', alignItems: 'center' },
-    commentStyle: { height: 70, borderColor: 'gray', borderWidth: 2, flex: 1, height: 70, margin: 5 },
+    commentStyle: { height: 70, borderColor: '#e1dbdb', borderWidth: 2, flex: 1, height: 70, margin: 5 },
     buttonBar: { position: 'absolute', width: '100%', height: 55, resizeMode: 'stretch' },
     iconView: { flexDirection: 'row', alignItems: 'center' },
     // scrollStyle: {flexDirection: 'column', backgroundColor: "white", flex: 1},
@@ -308,10 +357,10 @@ const styles = StyleSheet.create({
     // setBtnStyle: {backgroundColor: '#ae5945', padding: 15, borderRadius: 15, alignItems: 'center'},
     // setTextStyle: { color: 'white', fontSize: 20 },
     // setTxtIn: { height: 50, borderColor: 'gray', borderWidth: 2, width: 180, height: 40 },
-        // buttonBar: { position: 'absolute', width: '100%', height: 55, resizeMode: 'stretch' },
+    // buttonBar: { position: 'absolute', width: '100%', height: 55, resizeMode: 'stretch' },
     // posterImg: { alignSelf: 'flex-start', width: '100%', height: 300 },
     topicStyle: { fontSize: 20, alignSelf: 'center' },
-    desStyle: { flexDirection: 'row', alignItems: 'center' },
+    desStyle: { flexDirection: 'row' },
     stdStyle: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     imgLine: { flex: 1, flexDirection: 'row', alignItems: 'center' },
     imgLocation: { alignSelf: 'center', width: 30, height: 30 },
