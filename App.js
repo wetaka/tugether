@@ -10,11 +10,13 @@ import Home from './src/pages/Home'
 import Main from './src/pages/Main'
 import MasonryPage from './src/pages/MasonryPage'
 import { FluidNavigator, Transition } from 'react-navigation-fluid-transitions';
+import UserSetting from './src/pages/UserSetting';
+import Notificate from './src/pages/Notificate';
 
 
 const Navigator = FluidNavigator({
-    
-  
+  UserSetting: { screen: UserSetting},   
+  Notificate: {screen: Notificate}, 
   Description: { screen: Description },
   Home: { screen: Home },
   Login: { screen: Login },
@@ -23,6 +25,7 @@ const Navigator = FluidNavigator({
   CreateEvent: { screen: CreateEvent },
   Main: { screen: Main },
   MasonryPage: { screen: MasonryPage },  
+
   // Notificate: { screen: Notificate }
 })
 // export default class App extends React.Component {
@@ -46,6 +49,7 @@ const Navigator = FluidNavigator({
 //     );
 //   }
 // }
+
 
 // const styles = StyleSheet.create({
 //   container: {

@@ -34,7 +34,14 @@ export default class Footer extends Component {
 
 
         <TouchableOpacity
-          style={{ height: 55, flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'row' }}>
+          style={{ height: 55, flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'row' }}
+          onPress={() => { 
+            // Actions.Main({ userid: this.props.pm })
+            this.props.navigate('Notificate',{
+              userid: this.props.pm
+            })
+          }}
+        >
           <Image source={NotiIcon} style={{ width: '20%', height: '50%' }} />
           {/* <Text style={{ fontSize: 20 }}>  Notification </Text> */}
         </TouchableOpacity>
