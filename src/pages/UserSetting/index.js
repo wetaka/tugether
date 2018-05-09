@@ -2,18 +2,32 @@ import React from 'react';
 import { Text, View, Image, Dimensions, TouchableOpacity, TextInput, ScrollView, StyleSheet, CheckBox, AsyncStorage } from 'react-native';
 import kaimook from '../../Images/mook.jpg'
 import { API_URL } from "../../config/api";
-import { Button } from 'react-native-elements';
-
+import { Button, Divider } from 'react-native-elements';
+import ImagePicker from 'react-native-image-picker';
 
 
 // import { CheckBox } from 'react-native-elements'
+const options = {
+    title: 'Select Avatar',
+    customButtons: [
+        { name: 'fb', title: 'Choose Photo from Facebook' },
+    ],
+    storageOptions: {
+        skipBackup: true,
+        path: 'images'
+    }
+
+};
+
 
 class UserSetting extends React.Component {
 
     state = {
         category: [],
         user: {
-            categoryid: []
+            categoryid: [],
+            userpic: kaimook,
+
         }
     };
 
@@ -49,6 +63,7 @@ class UserSetting extends React.Component {
 
     chooseImage() {
         ImagePicker.showImagePicker(options, (response) => {
+
             console.log('Response = ', response);
 
             if (response.didCancel) {
@@ -67,7 +82,11 @@ class UserSetting extends React.Component {
                 // let source = { uri: 'data:image/jpeg;base64,' + response.data };
 
                 this.setState({
-                    avatarSource: source
+                    user: {
+                        ...this.state.user,
+                        userpic: source //TODO remove ******************************************************
+                        // avatarSource: source
+                    }
                 });
             }
         });
@@ -75,7 +94,7 @@ class UserSetting extends React.Component {
 
     updateUser() {
 
-        return fetch(API_URL + 'user/' +this.state.user.userid, {
+        return fetch(API_URL + 'user/' + this.state.user.userid, {
             method: 'PUT',
             headers: {
                 Accept: 'application/json',
@@ -88,14 +107,14 @@ class UserSetting extends React.Component {
                 console.log('vinaja', responseJson)
                 // this.getidofuser()
                 // this.addfirstcategory()
-                return  AsyncStorage.setItem('CURRENT_USER',JSON.stringify(this.state.user))
-                
+                return AsyncStorage.setItem('CURRENT_USER', JSON.stringify(this.state.user))
+
             })
-            .then(()=>  alert("Success"))       
+            .then(() => alert("Success"))
             .catch((error) => {
                 console.error(error);
                 alert("Not Success")
-               
+
             });
     }
 
@@ -133,7 +152,13 @@ class UserSetting extends React.Component {
                 .then((data) => {
                     console.log("fixbug getUserByID then 1")
 
-                    this.setState({ user: data });
+                    // this.setState({ user: data });
+                    this.setState({
+                        user: {
+                            ...data,
+                            userpic: kaimook //TODO remove ******************************************************
+                        }
+                    })
 
                     return AsyncStorage.setItem('CURRENT_USER', JSON.stringify(data));
                     // console.log(this.props.navigation.state.params.userid)                      
@@ -158,6 +183,7 @@ class UserSetting extends React.Component {
             this.setState({
                 user: {
                     ...this.state.user,
+                    userpic: kaimook, //TODO remove ******************************************************      
                     categoryid: this.state.user.categoryid.filter((id) => id !== cid)
                 }
             })
@@ -166,9 +192,11 @@ class UserSetting extends React.Component {
             this.setState({
                 user: {
                     ...this.state.user,
+                    userpic: kaimook //TODO remove ******************************************************
+                    ,
                     categoryid: [...this.state.user.categoryid, cid]
                 }
-            })          
+            })
         }
     }
 
@@ -181,7 +209,7 @@ class UserSetting extends React.Component {
                     <View style={{ padding: 20 }}>
                         <View style={styles.viewChooseImg}>
                             <TouchableOpacity onPress={() => { this.chooseImage() }}>
-                                <Image source={kaimook} style={styles.imgUser} />
+                                <Image source={this.state.user.userpic} style={styles.imgStyle} />
                             </TouchableOpacity>
                         </View>
                         <View style={{}}>
@@ -192,11 +220,15 @@ class UserSetting extends React.Component {
                                     <Text style={styles.desStyle}>ID : {this.state.user.userid} </Text>
                                     <Text style={styles.desStyle}>Firstname : {this.state.user.firstname}</Text>
                                     <Text style={styles.desStyle}>Lastname : {this.state.user.lastname} </Text>
-                                    <Text style={styles.desStyle}>Category :   </Text>
+
+
                                     {/* <Text style={styles.desStyle}>Contact:   </Text> */}
                                     {/* <Text style={styles.desStyle}>Description:   </Text> */}
                                 </View>
+
                             </View>
+                            <Divider />
+                            <Text style={styles.desStyle}>Category :   </Text>
 
                             {this.state.category
                                 .map((c) => {
@@ -226,7 +258,7 @@ class UserSetting extends React.Component {
                             }}
 
                         />
-
+                        <Divider />
                         <Button
                             large
                             icon={{ name: 'logout', type: 'material-community' }}

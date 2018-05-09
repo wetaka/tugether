@@ -25,6 +25,7 @@
     "react-native-elements": "^0.19.1",
     "react-native-image-picker": "^0.26.7",
     "react-native-masonry": "^0.4.7",
+    "react-native-material-textfield": "^0.12.0",
     "react-native-responsive-grid": "^0.41.99",
     "react-native-responsive-image": "^2.2.0",
     "react-native-router-flux": "^4.0.0-beta.27",

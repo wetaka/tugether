@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Image, Dimensions, TouchableOpacity, TextInput, ScrollView, AsyncStorage , DatePickerAndroid ,TimePickerAndroid , StyleSheet} from 'react-native';
+import { Text, View, Image, Dimensions, TouchableOpacity, TextInput, ScrollView, AsyncStorage, DatePickerAndroid, TimePickerAndroid, StyleSheet } from 'react-native';
 import Search from 'react-native-search-box';
 import posterFrame from '../../Images/posterframe.jpg';
 import ImagePicker from 'react-native-image-picker';
@@ -8,8 +8,8 @@ import HomeIcon from '../../Images/homeicon.png';
 import NotiIcon from '../../Images/notiicon.png';
 import ProfileIcon from '../../Images/profileicon.png';
 import FindIcon from '../../Images/findicon.png';
-import Footer from "../../components/Footer";
 import { API_URL } from "../../config/api";
+import { TextField } from 'react-native-material-textfield';
 
 const { width, height } = Dimensions.get('window');
 
@@ -39,13 +39,18 @@ class CreateEvent extends React.Component {
     state = {
 
         event: {
-            avatarSource: posterFrame,
-            topic: '..',
-            date: '..',
-            time: '..',
-            place: '..',
+            posterpic: posterFrame,
+            topic: '',
+            eventstdate: new Date(),
+            eventenddate: new Date(),
+            time: '',
+            place: '',
             contact: '..',
-            description: '..'
+            facebook: '',
+            line: '',
+            web: '',
+            phone: '',
+            description: ''
         },
 
         user: {
@@ -159,33 +164,62 @@ class CreateEvent extends React.Component {
 
     setDate = async () => {
         try {
-            alert(555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555)
-            const {action, year, month, day} = await DatePickerAndroid.open({
-              // Use `new Date()` for current date.
-              // May 25 2020. Month 0 is January.
-              date: new Date(2020, 4, 25)
+            alert(55555555555555555555555555555555555555555555555555555555555555555555)
+            const { action, year, month, day } = await DatePickerAndroid.open({
+                // Use `new Date()` for current date.
+                // May 25 2020. Month 0 is January.
+                date: this.state.event.eventstdate
             });
             if (action !== DatePickerAndroid.dismissedAction) {
-              // Selected year, month (0-11), day
+                // Selected year, month (0-11), day
+                console.log('Day ', day)
+                console.log('Month ', month)
+                console.log('Year ', year)
+                console.log('Action ', action)
+                this.setState({
+                    event: {
+                        ...this.state.event ,
+                        eventstdate : new Date(year,month,day,this.state.event.eventstdate.getHours(),this.state.event.eventstdate.getMinutes(),this.state.event.eventstdate.getMilliseconds())
+                    }
+                })
+
+                console.log(this.state.event.eventstdate)
             }
-          } catch ({code, message}) {
+
+
+        } catch ({ code, message }) {
             console.warn('Cannot open date picker', message);
-          }
+        }
     }
 
     setTime = async () => {
+
         try {
-            const {action, hour, minute} = await TimePickerAndroid.open({
-              hour: 14,
-              minute: 0,
-              is24Hour: false, // Will display '2 PM'
+
+            const dateNow = new Date()
+            const { action, hour, minute } = await TimePickerAndroid.open({
+
+                hour: this.state.event.eventstdate.getHours(),
+                minute: this.state.event.eventstdate.getMinutes(),
+                is24Hour: false, // Will display '2 PM'
             });
             if (action !== TimePickerAndroid.dismissedAction) {
-              // Selected hour (0-23), minute (0-59)
+                // Selected hour (0-23), minute (0-59)
+                console.log(hour)
+                console.log(minute)
+                this.setState({
+                    event: {
+                        ...this.state.event,
+                        eventstdate : new Date(this.state.event.eventstdate.getFullYear(),this.state.event.eventstdate.getMonth(),this.state.event.eventstdate.getDate(), hour, minute)
+                    }
+                })
+
+                console.log(this.state.event.eventstdate)
+                
             }
-          } catch ({code, message}) {
+        } catch ({ code, message }) {
             console.warn('Cannot open time picker', message);
-          }
+        }
     }
 
 
@@ -215,12 +249,16 @@ class CreateEvent extends React.Component {
                 // let source = { uri: 'data:image/jpeg;base64,' + response.data };
 
                 this.setState({
-                    avatarSource: source
+                    event: {
+                        ...this.state.event,
+                        posterpic: source
+                    }
+                    // posterpic: source
                 });
             }
         });
     }
-    
+
     render() {
         return (
             <View style={{ flex: 1 }}>
@@ -253,113 +291,141 @@ class CreateEvent extends React.Component {
                         <View style={styles.viewChooseImg}>
                             <TouchableOpacity onPress={() => { this.chooseImage() }}>
                                 <Image
-                                    source={this.state.event.avatarSource}
+                                    source={this.state.event.posterpic}
                                     style={styles.imgStyle}
                                 />
                             </TouchableOpacity>
                         </View>
-                        <View style={{ flexDirection: 'row' }}>
+                        {/* <View style={{ flexDirection: 'row' }}> */}
 
+                        <View style={{}}>
+                            <TextField
+                                label='Topic'
+                                value={this.state.event.topic}
+                                onChangeText={text => this.setState({
+                                    event: {
+                                        ...this.state.event,
+                                        topic: text
+                                    }
+                                })}
+                            />
 
-                            <View style={{ flexDirection: 'row' }}>
-                                <View style={{ alignItems: 'flex-end' }}>
-                                    <Text style={styles.desStyle}>Topic:   </Text>
-                                    <Text style={styles.desStyle}>Date:   </Text>
-                                    <Text style={styles.desStyle}>Time:   </Text>
-                                    <Text style={styles.desStyle}>Place:   </Text>
-                                    <Text style={styles.desStyle}>Contact:   </Text>
-                                    <Text style={styles.desStyle}>Description:   </Text>
-                                </View>
-
-                                <View>
-                                    <TextInput
-                                        secureTextEntry={false}
-                                        keyboardType="default"
-                                        style={styles.topicStyle}
-                                        onChangeText={text => { this.setState({ topic: text }) }}
-                                        value={this.state.event.topic}
-                                    />
-
-                                    <TouchableOpacity
-                                        style={styles.setBtnStyle}
-                                        onPress={() => { this.setDate() }}
-                                    >
-                                        <Text style={styles.setTextStyle}>
-                                            date
+                            <TouchableOpacity
+                                style={styles.setBtnStyle}
+                                onPress={() => { this.setDate() }}
+                            >
+                                <Text style={styles.setTextStyle}>
+                                    date
                                         </Text>
-                                    </TouchableOpacity>
+                            </TouchableOpacity>
 
-                                    <TouchableOpacity
-                                        style={styles.setBtnStyle}
-                                        onPress={() => { this.setTime() }}
-                                    >
-                                        <Text style={styles.setTextStyle}>
-                                            time
+                            <TouchableOpacity
+                                style={styles.setBtnStyle}
+                                onPress={() => { this.setDate() }}
+                            >
+                                <Text style={styles.setTextStyle}>
+                                    date
                                         </Text>
-                                    </TouchableOpacity>
+                            </TouchableOpacity>
 
-                                    <TextInput
-                                        secureTextEntry={false}
-                                        keyboardType="default"
-                                        style={styles.setTxtIn}
-                                        onChangeText={text => { this.setState({ date: text }) }}
-                                        value={this.state.event.date}
-                                    />
-                                    <TextInput
-                                        secureTextEntry={false}
-                                        keyboardType="default"
-                                        style={styles.setTxtIn}
-                                        onChangeText={text => { this.setState({ time: text }) }}
-                                        value={this.state.event.time}
-                                    />
-                                    <TextInput
-                                        secureTextEntry={false}
-                                        keyboardType="default"
-                                        style={styles.setTxtIn}
-                                        onChangeText={text => { this.setState({ place: text }) }}
-                                        value={this.state.event.place}
-                                    />
-                                    <TextInput
-                                        secureTextEntry={false}
-                                        keyboardType="default"
-                                        style={styles.setTxtIn}
-                                        onChangeText={text => { this.setState({ contact: text }) }}
-                                        value={this.state.event.contact}
-                                    />
-                                    <TextInput
-                                        secureTextEntry={false}
-                                        keyboardType="default"
-                                        style={styles.setTxtIn}
-                                        onChangeText={text => { this.setState({ description: text }) }}
-                                        value={this.state.event.description}
-                                    />
-                                    {/* <Text style={{ fontSize: 20 }}> ___________________</Text>
-                                    <Text style={{ fontSize: 20 }}> ___________________</Text>
-                                    <Text style={{ fontSize: 20 }}> ___________________</Text>
-                                    <Text style={{ fontSize: 20 }}> ___________________</Text>
-                                    <Text style={{ fontSize: 20 }}> ___________________</Text> */}
+                            <TouchableOpacity
+                                style={styles.setBtnStyle}
+                                onPress={() => { this.setTime() }}
+                            >
+                                <Text style={styles.setTextStyle}>
+                                    time
+                                        </Text>
+                            </TouchableOpacity>
 
-                                    <View style={{ paddingVertical: 10 }}>
-                                        <TouchableOpacity
-                                            style={styles.setBtnStyle}
-                                            onPress={() => { this.saveEvent() }}
-                                        >
-                                            <Text style={styles.setTextStyle}>
-                                                SAVE
+
+                            <TextField
+                                label='Location'
+                                value={this.state.event.place}
+                                onChangeText={text => this.setState({
+                                    event: {
+                                        ...this.state.event,
+                                        place: text
+                                    }
+                                })}
+                            />
+
+                            <TextField
+                                label='Limited'
+                                value={this.state.event.limited}
+                                onChangeText={text => this.setState({
+                                    event: {
+                                        ...this.state.event,
+                                        limited: text
+                                    }
+                                })}
+                            />
+                            <TextField
+                                label='Facebook'
+                                value={this.state.event.facebook}
+                                onChangeText={text => this.setState({
+                                    event: {
+                                        ...this.state.event,
+                                        facebook: text
+                                    }
+                                })}
+                            />
+
+                            <TextField
+                                label='Line'
+                                value={this.state.event.line}
+                                onChangeText={text => this.setState({
+                                    event: {
+                                        ...this.state.event,
+                                        line: text
+                                    }
+                                })}
+                            />
+                            <TextField
+                                label='Website'
+                                value={this.state.event.website}
+                                onChangeText={text => this.setState({
+                                    event: {
+                                        ...this.state.event,
+                                        website: text
+                                    }
+                                })}
+                            />
+
+                            <TextField
+                                label='Phone number'
+                                value={this.state.event.phone}
+                                onChangeText={text => this.setState({
+                                    event: {
+                                        ...this.state.event,
+                                        phone: text
+                                    }
+                                })}
+                            />
+                            <TextField
+                                label='Description'
+                                value={this.state.event.description}
+                                onChangeText={text => this.setState({
+                                    event: {
+                                        ...this.state.event,
+                                        description: text
+                                    }
+                                })}
+                            />
+
+                            <View style={{ paddingVertical: 10 }}>
+                                <TouchableOpacity
+                                    style={styles.setBtnStyle}
+                                    onPress={() => { this.saveEvent() }}
+                                >
+                                    <Text style={styles.setTextStyle}>
+                                        SAVE
                                             </Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
+                                </TouchableOpacity>
                             </View>
+
                         </View>
                     </View>
                 </ScrollView>
-                <View >
-                    <Footer
-                        navigate ={this.props.navigation.navigate}
-                        pm={(this.props.navigation && this.props.navigation.state && this.props.navigation.state.params && this.props.navigation.state.params.userid) ? this.props.navigation.state.params.userid : null}
-                    />
-                </View>
             </View >
         )
     }
@@ -368,15 +434,15 @@ class CreateEvent extends React.Component {
 
 const styles = StyleSheet.create({
     buttonBar: { position: 'absolute', width: '100%', height: 55, resizeMode: 'stretch' },
-    scrollStyle: {flexDirection: 'column', backgroundColor: "white", flex: 1},
-    viewChooseImg: {flexDirection: 'row', alignItems: 'center', justifyContent: 'center'},
-    imgStyle: {alignSelf: 'flex-start', width: 200, height: 200 },
-    desStyle: {marginBottom: 16, fontSize: 20},
-    viewBtn: {flexDirection: 'column', height: 55, width: '100%' },
+    scrollStyle: { flexDirection: 'column', backgroundColor: "white", flex: 1 },
+    viewChooseImg: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
+    imgStyle: { alignSelf: 'flex-start', width: 200, height: 200 },
+    desStyle: { marginBottom: 16, fontSize: 20 },
+    viewBtn: { flexDirection: 'column', height: 55, width: '100%' },
     topicStyle: { height: 50, borderColor: 'gray', borderWidth: 2, width: 180, height: 40 },
-    setBtnStyle: {backgroundColor: '#ae5945', padding: 15, borderRadius: 15, alignItems: 'center'},
+    setBtnStyle: { backgroundColor: '#ae5945', padding: 15, borderRadius: 15, alignItems: 'center' },
     setTextStyle: { color: 'white', fontSize: 20 },
     setTxtIn: { height: 50, borderColor: 'gray', borderWidth: 2, width: 180, height: 40 },
-  })
+})
 
 export default CreateEvent;

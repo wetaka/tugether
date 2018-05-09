@@ -15,14 +15,16 @@ import Notificate from './src/pages/Notificate';
 
 
 const Navigator = FluidNavigator({
+  CreateEvent: { screen: CreateEvent },
+  Home: { screen: Home },
   UserSetting: { screen: UserSetting},   
   Notificate: {screen: Notificate}, 
   Description: { screen: Description },
-  Home: { screen: Home },
+  
   Login: { screen: Login },
   Category: { screen: Category },
   Joined: { screen: Joined },
-  CreateEvent: { screen: CreateEvent },
+  // CreateEvent: { screen: CreateEvent },
   Main: { screen: Main },
   MasonryPage: { screen: MasonryPage },  
 

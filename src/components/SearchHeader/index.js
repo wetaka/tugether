@@ -39,7 +39,7 @@ export default class SearchHeader extends Component {
                                             // Actions.CreateEvent();
                                             this.props.navigate('CreateEvent')
                                         }}
-                                    
+
                                     >
                                         <Image source={FindIcon} style={{ width: '100%', height: '100%', alignItems: 'flex-end', justifyContent: 'flex-end' }} />
                                     </TouchableOpacity>
@@ -53,19 +53,17 @@ export default class SearchHeader extends Component {
                                     <TouchableOpacity
                                         style={{ width: '20%', height: '100%', alignItems: 'flex-end', justifyContent: 'flex-end' }}
                                         onPress={() => {
-                                            AsyncStorage.setItem('CURRENT_USER', "").then(() => {
-                                                // Actions.Login();
-                                                this.props.navigate('Login')
-                                            });
+                                            this.props.navigate('UserSetting')
+
                                         }}
-                                    
+
                                     >
                                         <Image source={FindIcon} style={{ width: '100%', height: '100%', alignItems: 'flex-end', justifyContent: 'flex-end' }} />
                                     </TouchableOpacity>
                                 )
                                 : null
                         }
-                        
+
                     </View>
                 </View>
             </View>
