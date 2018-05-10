@@ -12,22 +12,28 @@ import MasonryPage from './src/pages/MasonryPage'
 import { FluidNavigator, Transition } from 'react-navigation-fluid-transitions';
 import UserSetting from './src/pages/UserSetting';
 import Notificate from './src/pages/Notificate';
+import UpdateEvent from './src/pages/UpdateEvent';
+
 
 
 const Navigator = FluidNavigator({
-  UpdateEvent : {screen: UpdateEvent},
+  UserSetting: { screen: UserSetting },
+  UpdateEvent: { screen: UpdateEvent },
   CreateEvent: { screen: CreateEvent },
-  Home: { screen: Home },
-  UserSetting: { screen: UserSetting},   
-  Notificate: {screen: Notificate}, 
-  Description: { screen: Description },
   
+
+
+  Home: { screen: Home },
+
+  Notificate: { screen: Notificate },
+  Description: { screen: Description },
+
   Login: { screen: Login },
   Category: { screen: Category },
   Joined: { screen: Joined },
   // CreateEvent: { screen: CreateEvent },
   Main: { screen: Main },
-  MasonryPage: { screen: MasonryPage },  
+  MasonryPage: { screen: MasonryPage },
 
   // Notificate: { screen: Notificate }
 })

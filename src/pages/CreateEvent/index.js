@@ -11,7 +11,7 @@ import FindIcon from '../../Images/findicon.png';
 import { API_URL } from "../../config/api";
 import { TextField } from 'react-native-material-textfield';
 import { Button, Divider, Icon } from 'react-native-elements';
-
+import moment from 'moment'
 
 const { width, height } = Dimensions.get('window');
 
@@ -38,7 +38,7 @@ class CreateEvent extends React.Component {
             eventstdate: new Date(),
             eventenddate: new Date(),
             time: '',
-            place: '',
+            location: '',
             contact: '..',
             facebook: '',
             line: '',
@@ -47,7 +47,7 @@ class CreateEvent extends React.Component {
             hashtag: '',
             description: '',
             categoryid: [],
-            limited:0
+            limited: 0
         },
 
         user: {
@@ -82,7 +82,7 @@ class CreateEvent extends React.Component {
                 });
         });
     }
-   
+
     getCurrentUser() {
         console.log("getCurrentUser")
 
@@ -110,43 +110,7 @@ class CreateEvent extends React.Component {
     }
 
 
-    saveEvent() {
-        fetch(API_URL + 'event', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                topic: this.state.event.topic,
-                join: [
-                    this.state.user.userid
-                ],
-                createby: this.state.user.userid,
-                location: this.state.event.place,
-                approve: "1",
-                description: this.state.event.description,
-                facebook: this.state.event.facebook,
-                line: this.state.event.line,
-                web: this.state.event.web,
-                phone: this.state.event.phone,
-                hashtag: this.state.event.hashtag,
-                eventstdate: this.state.event.eventstdate,
-                eventenddate: this.state.event.eventenddate,
-                limited: this.state.event.limited,
-                categoryid: this.state.event.categoryid
-
-            }),
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                console.log('vinaja', responseJson)
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }
-
+    
     setStartDate = async () => {
         try {
             alert("Start Date")
@@ -161,12 +125,22 @@ class CreateEvent extends React.Component {
                 console.log('Month ', month)
                 console.log('Year ', year)
                 console.log('Action ', action)
-                this.setState({
-                    event: {
-                        ...this.state.event,
-                        eventstdate: new Date(year, month, day, this.state.event.eventstdate.getHours(), this.state.event.eventstdate.getMinutes(), this.state.event.eventstdate.getMilliseconds())
-                    }
-                })
+
+                const date_now = new Date()
+                let a = moment([year, month, day]);
+                let b = moment([date_now.getFullYear(), date_now.getMonth(), date_now.getDate()]);
+                console.log("Moment",a.diff(b ,'days'))
+                if (a.diff(b ,'days') >= 1) {
+                    this.setState({
+                        event: {
+                            ...this.state.event,
+                            eventstdate: new Date(year, month, day, this.state.event.eventstdate.getHours(), this.state.event.eventstdate.getMinutes(), this.state.event.eventstdate.getMilliseconds())
+                        }
+                    })
+                } // 1
+                else {
+                    alert("Start Date cannot less than Today")
+                }
 
                 console.log(this.state.event.eventstdate)
             }
@@ -176,6 +150,7 @@ class CreateEvent extends React.Component {
             console.warn('Cannot open date picker', message);
         }
     }
+
 
     setEndDate = async () => {
         try {
@@ -191,12 +166,24 @@ class CreateEvent extends React.Component {
                 console.log('Month ', month)
                 console.log('Year ', year)
                 console.log('Action ', action)
-                this.setState({
-                    event: {
-                        ...this.state.event,
-                        eventenddate: new Date(year, month, day, this.state.event.eventenddate.getHours(), this.state.event.eventenddate.getMinutes(), this.state.event.eventstdate.getMilliseconds())
-                    }
-                })
+                console.log('Action ', action)
+
+
+                let a = moment([year, month, day]);
+                let b = moment([this.state.event.eventstdate.getFullYear(), this.state.event.eventstdate.getMonth(), this.state.event.eventstdate.getDate()]);
+
+                console.log("Moment End date",a.diff(b, 'days'))
+                if (a.diff(b, 'days') >= 0) {
+                    this.setState({
+                        event: {
+                            ...this.state.event,
+                            eventenddate: new Date(year, month, day, this.state.event.eventenddate.getHours(), this.state.event.eventenddate.getMinutes(), this.state.event.eventstdate.getMilliseconds())
+                        }
+                    })
+                } // 1
+                else {
+                    alert("End Date cannot less than Start Date")
+                }
 
                 console.log(this.state.event.eventenddate)
             }
@@ -206,6 +193,8 @@ class CreateEvent extends React.Component {
             console.warn('Cannot open date picker', message);
         }
     }
+
+
 
 
     setTime = async () => {
@@ -259,7 +248,10 @@ class CreateEvent extends React.Component {
                 console.log('User tapped custom button: ', response.customButton);
             }
             else {
-                let source = { uri: response.uri };
+                // let source = { uri: response.uri };
+                let source = { uri: 'data:image/jpeg;base64,' + response.data  };
+                
+                
                 console.log(source);
                 // You can also display the image using data:
                 // let source = { uri: 'data:image/jpeg;base64,' + response.data };
@@ -296,16 +288,158 @@ class CreateEvent extends React.Component {
         }
     }
 
-    setFormatDate(date,month,year){
-        date = "0"+date
-        month = "0"+month
-        return date.substring(date.length-2,date.length)+"-"+month.substring(month.length-2,month.length)+"-"+year
+    setFormatDate(date, month, year) {
+        date = "0" + date
+        month = "0" + month
+        return date.substring(date.length - 2, date.length) + "-" + month.substring(month.length - 2, month.length) + "-" + year
     }
 
-    setFormatTime(hours,minutes){
-        hours = "0"+hours
-        minutes = "0"+minutes
-        return hours.substring(hours.length-2,hours.length)+":"+minutes.substring(minutes.length-2,minutes.length)
+    setFormatTime(hours, minutes) {
+        hours = "0" + hours
+        minutes = "0" + minutes
+        return hours.substring(hours.length - 2, hours.length) + ":" + minutes.substring(minutes.length - 2, minutes.length)
+    }
+
+    validateNull(text) {
+        console.log("Trim ???? ",text)
+        if (text === null || text === undefined || text.trim() === "") {
+            return false
+        }
+        else {
+            return true
+        }
+    }
+
+    validateNotZero(text) {
+        
+        if (typeof text=== 'number' && text <= 0) {
+            return false
+        }
+        else {
+            return true
+        }
+    }
+
+    validateMoreThan10000(text) {
+        if (text > 10000) {
+            return false
+        }
+        else {
+            return true
+        }
+    }
+
+    // validateSpace(text){
+    //    return text.indexOf(' ') >= 0;
+    // }
+
+    validateSpace(text) {
+        let res = text.split("#");
+        // console.log(res)
+        if (res.some((r) => r.trim().indexOf(' ') >= 0)) {
+            console.log("have space")
+            return false
+        }
+        else {
+            console.log("not have space")
+            return true
+        }
+
+    }
+
+
+    validateHashTag(text) {
+        if (text.substring(text.length - 1, text.length) === '#') {
+            return false
+        }
+        else {
+            return true
+        }
+    }
+
+    saveEvent() {
+        if (!this.validateNull(this.state.event.topic)) {
+            alert("Please enter Topic")
+            return;
+        }
+        if (!this.validateNull(this.state.event.location)) {
+            alert("Please enter location")
+            return;
+        }
+        if (!this.validateNotZero(this.state.event.limited)) {
+            alert("Please enter limited")
+            return;
+        }
+        if (!this.validateMoreThan10000(this.state.event.limited)) {
+            alert("Limited can not more than 10000")
+            return;
+        }
+        if (!this.validateHashTag(this.state.event.hashtag)) {
+            alert("Last words cannot have #")
+            return;
+        }
+        if (!this.validateSpace(this.state.event.hashtag)) {
+            alert("Cannot have white spaces!")
+            return;
+        }
+        if(this.state.event.categoryid === []){
+            alert("Category is null")
+            return;
+        }
+
+        const date_now = new Date()
+        let c = moment([this.state.event.eventstdate.getFullYear(), this.state.event.eventstdate.getMonth(), this.state.event.eventstdate.getDate()]);
+        let d = moment([date_now.getFullYear(), date_now.getMonth(), date_now.getDate()]);
+
+        if (c.diff(d ,'days') <= 0) {
+            alert("Start Date cannot less than Today")
+            return;
+        } // 1
+
+        let e = moment([this.state.event.eventenddate.getFullYear(), this.state.event.eventenddate.getMonth(), this.state.event.eventenddate.getDate()]);
+        let f = moment([this.state.event.eventstdate.getFullYear(), this.state.event.eventstdate.getMonth(), this.state.event.eventstdate.getDate()]);
+
+        if (e.diff(f ,'days') < 0) {
+            alert("End Date cannot less than Start Date")
+            return;
+        } // 1
+
+
+        fetch(API_URL + 'event', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                topic: this.state.event.topic,
+                join: [
+                    this.state.user.userid
+                ],
+                createby: this.state.user.userid,
+                location: this.state.event.location,
+                approve: "1",
+                description: this.state.event.description,
+                facebook: this.state.event.facebook,
+                line: this.state.event.line,
+                web: this.state.event.web,
+                phone: this.state.event.phone,
+                hashtag: this.state.event.hashtag,
+                eventstdate: this.state.event.eventstdate,
+                eventenddate: this.state.event.eventenddate,
+                limited: this.state.event.limited,
+                categoryid: this.state.event.categoryid,
+                posterpic: this.state.event.posterpic.uri
+
+            }),
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                console.log('vinaja', responseJson)
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     }
 
     render() {
@@ -343,23 +477,24 @@ class CreateEvent extends React.Component {
 
                         <View style={{}}>
                             <TextField
+                                autoFocus= {true}                                
                                 label='Topic'
                                 value={this.state.event.topic}
-                                onChangeText={text => this.setState({
-                                    event: {
-                                        ...this.state.event,
-                                        topic: text
-                                    }
-                                })}
+                                onChangeText={text => {
+                                    this.setState({
+                                        event: {
+                                            ...this.state.event,
+                                            topic: text
+                                        }
+                                    })
+                                }
+                                }
                             />
 
 
                             <TouchableOpacity
 
                                 onPress={() => {
-                                    // this.setState({ isSelect: item.id })
-                                    // this.props.filterCategory(item.id)
-                                    // Actions.Description({ eventid: item.id });
                                     this.setStartDate()
                                 }}>
                                 <View style={{ flexDirection: 'row' }}>
@@ -367,8 +502,8 @@ class CreateEvent extends React.Component {
                                         <TextField
                                             label='Start Event Date'
                                             editable={false}
-                                            value={this.setFormatDate(this.state.event.eventstdate.getDate(),this.state.event.eventstdate.getMonth() +1,this.state.event.eventstdate.getFullYear())}
-                                        
+                                            value={this.setFormatDate(this.state.event.eventstdate.getDate(), this.state.event.eventstdate.getMonth() + 1, this.state.event.eventstdate.getFullYear())}
+
                                         />
                                     </View>
                                     <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
@@ -382,7 +517,7 @@ class CreateEvent extends React.Component {
                             <TouchableOpacity
 
                                 onPress={() => {
-                                   
+
                                     this.setEndDate()
                                 }}>
                                 <View style={{ flexDirection: 'row' }}>
@@ -390,7 +525,7 @@ class CreateEvent extends React.Component {
                                         <TextField
                                             label='End Event Date'
                                             editable={false}
-                                            value={this.setFormatDate(this.state.event.eventenddate.getDate(),this.state.event.eventenddate.getMonth() +1,this.state.event.eventenddate.getFullYear())}                                                                                        
+                                            value={this.setFormatDate(this.state.event.eventenddate.getDate(), this.state.event.eventenddate.getMonth() + 1, this.state.event.eventenddate.getFullYear())}
                                         />
                                     </View>
                                     <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
@@ -404,7 +539,7 @@ class CreateEvent extends React.Component {
                             <TouchableOpacity
 
                                 onPress={() => {
-                                   
+
                                     this.setTime()
                                 }}>
                                 <View style={{ flexDirection: 'row' }}>
@@ -413,8 +548,8 @@ class CreateEvent extends React.Component {
                                             label='Start Event Time'
                                             // disabled={true}
                                             editable={false}
-                                            value={this.setFormatTime(this.state.event.eventstdate.getHours(),this.state.event.eventstdate.getMinutes())}
-                                            
+                                            value={this.setFormatTime(this.state.event.eventstdate.getHours(), this.state.event.eventstdate.getMinutes())}
+
                                         />
                                     </View>
                                     <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
@@ -427,24 +562,30 @@ class CreateEvent extends React.Component {
 
                             <TextField
                                 label='Location'
-                                value={this.state.event.place}
-                                onChangeText={text => this.setState({
-                                    event: {
-                                        ...this.state.event,
-                                        place: text
-                                    }
-                                })}
+                                value={this.state.event.location}
+                                onChangeText={text => {
+                                    this.setState({
+                                        event: {
+                                            ...this.state.event,
+                                            location: text
+                                        }
+                                    })
+                                }}
                             />
 
                             <TextField
                                 label='Limited'
+                                keyboardType="numeric"
+                                
                                 value={this.state.event.limited}
-                                onChangeText={text => this.setState({
-                                    event: {
-                                        ...this.state.event,
-                                        limited: text
-                                    }
-                                })}
+                                onChangeText={text => {
+                                    this.setState({
+                                        event: {
+                                            ...this.state.event,
+                                            limited: text
+                                        }
+                                    })
+                                }}
                             />
                             <TextField
                                 label='Facebook'
@@ -480,6 +621,8 @@ class CreateEvent extends React.Component {
 
                             <TextField
                                 label='Phone number'
+                                keyboardType="numeric"
+                                
                                 value={this.state.event.phone}
                                 onChangeText={text => this.setState({
                                     event: {
@@ -487,60 +630,21 @@ class CreateEvent extends React.Component {
                                         phone: text
                                     }
                                 })}
-                            />           
+                            />
 
                             <TextField
                                 label='#Hashtag'
                                 value={this.state.event.hashtag}
-                                onChangeText={text => this.setState({
-                                    event: {
-                                        ...this.state.event,
-                                        hashtag: text
-                                    }
-                                })}
-                            />    
-
-                            {/* <Button
-                                    large
-                                    icon={{ name: 'date-range', type: 'material-icons' }}
-                                    // title='Edit profile'
-                                    // buttonStyle={{}
-
-                                    onPress={() => {
-                                        // this.updateUser()
-                                    }}
-
-                                /> */}
-
-                            {/* <TouchableOpacity
-
-                                onPress={() => {
-                                    // this.setState({ isSelect: item.id })
-                                    // this.props.filterCategory(item.id)
-                                    // Actions.Description({ eventid: item.id });
-                                }}>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <View style={{ flex: 1 }}>
-                                        <TextField
-                                            label='#Hashtag'
-                                            // disabled={true}
-                                            editable={false}
-                                            value={"this.state.event.hashtag"}
-                                            onChangeText={text => this.setState({
-                                                event: {
-                                                    ...this.state.event,
-                                                    hashtag: text
-                                                }
-                                            })}
-                                        />
-                                    </View>
-                                    <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
-                                        <Icon name='date-range' type='material-icons' size={50} color='green'
-                                        />
-                                    </View>
-
-                                </View>
-                            </TouchableOpacity> */}
+                                onChangeText={text => {
+                                    // if()
+                                    this.setState({
+                                        event: {
+                                            ...this.state.event,
+                                            hashtag: text
+                                        }
+                                    })
+                                }}
+                            />
 
 
                             <TextField

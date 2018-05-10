@@ -4,6 +4,7 @@ import kaimook from '../../Images/mook.jpg'
 import { API_URL } from "../../config/api";
 import { Button, Divider } from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
+import HeaderBack from "../../components/HeaderBack";
 
 
 // import { CheckBox } from 'react-native-elements'
@@ -76,7 +77,7 @@ class UserSetting extends React.Component {
                 console.log('User tapped custom button: ', response.customButton);
             }
             else {
-                let source = { uri: response.uri };
+                let source = { uri: 'data:image/jpeg;base64,' + response.data };
                 console.log(source);
                 // You can also display the image using data:
                 // let source = { uri: 'data:image/jpeg;base64,' + response.data };
@@ -205,78 +206,81 @@ class UserSetting extends React.Component {
         if (this.state.user.userid) {
             return (
 
-                <ScrollView style={{ flexDirection: 'column', backgroundColor: "white", flex: 1 }}>
-                    <View style={{ padding: 20 }}>
-                        <View style={styles.viewChooseImg}>
-                            <TouchableOpacity onPress={() => { this.chooseImage() }}>
-                                <Image source={this.state.user.userpic} style={styles.imgStyle} />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{}}>
+                <View>
+                    <HeaderBack />
+                    <ScrollView style={{ flexDirection: 'column', backgroundColor: "white", flex: 1 }}>
 
-
-                            <View style={{ flexDirection: 'row' }}>
-                                <View style={{ alignItems: 'flex-start' }}>
-                                    <Text style={styles.desStyle}>ID : {this.state.user.userid} </Text>
-                                    <Text style={styles.desStyle}>Firstname : {this.state.user.firstname}</Text>
-                                    <Text style={styles.desStyle}>Lastname : {this.state.user.lastname} </Text>
-
-
-                                    {/* <Text style={styles.desStyle}>Contact:   </Text> */}
-                                    {/* <Text style={styles.desStyle}>Description:   </Text> */}
-                                </View>
-
+                        <View style={{ padding: 20 }}>
+                            <View style={styles.viewChooseImg}>
+                                <TouchableOpacity onPress={() => { this.chooseImage() }}>
+                                    <Image source={this.state.user.userpic} style={styles.imgStyle} />
+                                </TouchableOpacity>
                             </View>
+                            <View style={{}}>
+
+
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ alignItems: 'flex-start' }}>
+                                        <Text style={styles.desStyle}>ID : {this.state.user.userid} </Text>
+                                        <Text style={styles.desStyle}>Firstname : {this.state.user.firstname}</Text>
+                                        <Text style={styles.desStyle}>Lastname : {this.state.user.lastname} </Text>
+
+
+                                        {/* <Text style={styles.desStyle}>Contact:   </Text> */}
+                                        {/* <Text style={styles.desStyle}>Description:   </Text> */}
+                                    </View>
+
+                                </View>
+                                <Divider />
+                                <Text style={styles.desStyle}>Category :   </Text>
+
+                                {this.state.category
+                                    .map((c) => {
+
+                                        return (
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <CheckBox
+                                                    value={(this.state.user.categoryid.find((id) => c.id === id)) ? true : false}
+                                                    onValueChange={() => this.checkValue(c.id)}
+
+                                                />
+                                                <Text style={{ marginTop: 5 }}> {c.categoryname} </Text>
+                                            </View>
+                                        )
+                                    })}
+                            </View>
+
+
+                            <Button
+                                large
+                                icon={{ name: 'edit-2', type: 'feather' }}
+                                title='Edit profile'
+                                buttonStyle={{ borderRadius: 10, marginVertical: 5, backgroundColor: '#8B0000' }}
+
+                                onPress={() => {
+                                    this.updateUser()
+                                }}
+
+                            />
                             <Divider />
-                            <Text style={styles.desStyle}>Category :   </Text>
+                            <Button
+                                large
+                                icon={{ name: 'logout', type: 'material-community' }}
+                                title='Log Out'
+                                buttonStyle={{ borderRadius: 10, marginVertical: 5, backgroundColor: '#4B0082' }}
 
-                            {this.state.category
-                                .map((c) => {
+                                onPress={() => {
+                                    AsyncStorage.setItem('CURRENT_USER', "").then(() => {
 
-                                    return (
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <CheckBox
-                                                value={(this.state.user.categoryid.find((id) => c.id === id)) ? true : false}
-                                                onValueChange={() => this.checkValue(c.id)}
+                                        this.props.navigation.navigate('Login')
+                                    });
+                                }}
+                            />
 
-                                            />
-                                            <Text style={{ marginTop: 5 }}> {c.categoryname} </Text>
-                                        </View>
-                                    )
-                                })}
                         </View>
+                    </ScrollView >
 
-
-                        <Button
-                            large
-                            icon={{ name: 'edit-2', type: 'feather' }}
-                            title='Edit profile'
-                            buttonStyle={{ borderRadius: 10, marginVertical: 5, backgroundColor: '#8B0000' }}
-
-                            onPress={() => {
-                                this.updateUser()
-                            }}
-
-                        />
-                        <Divider />
-                        <Button
-                            large
-                            icon={{ name: 'logout', type: 'material-community' }}
-                            title='Log Out'
-                            buttonStyle={{ borderRadius: 10, marginVertical: 5, backgroundColor: '#4B0082' }}
-
-                            onPress={() => {
-                                AsyncStorage.setItem('CURRENT_USER', "").then(() => {
-
-                                    this.props.navigation.navigate('Login')
-                                });
-                            }}
-                        />
-
-                    </View>
-                </ScrollView >
-
-
+                </View>
 
             )
         }
