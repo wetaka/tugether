@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Image, Dimensions, TouchableOpacity, TextInput, ScrollView, AsyncStorage, DatePickerAndroid, TimePickerAndroid, StyleSheet } from 'react-native';
+import { Text, View, Image, Dimensions, TouchableOpacity, CheckBox, TextInput, ScrollView, AsyncStorage, DatePickerAndroid, TimePickerAndroid, StyleSheet } from 'react-native';
 import Search from 'react-native-search-box';
 import posterFrame from '../../Images/posterframe.jpg';
 import ImagePicker from 'react-native-image-picker';
@@ -10,17 +10,11 @@ import ProfileIcon from '../../Images/profileicon.png';
 import FindIcon from '../../Images/findicon.png';
 import { API_URL } from "../../config/api";
 import { TextField } from 'react-native-material-textfield';
+import { Button, Divider, Icon } from 'react-native-elements';
+
 
 const { width, height } = Dimensions.get('window');
 
-// const {action, year, month, day} = await DatePickerAndroid.open({
-//     // Use `new Date()` for current date.
-//     // May 25 2020. Month 0 is January.
-//     date: new Date(2020, 4, 25)
-//   });
-
-
-/////////////////////////////test///////////////////////////////////
 const options = {
     title: 'Select Avatar',
     customButtons: [
@@ -37,7 +31,7 @@ class CreateEvent extends React.Component {
 
 
     state = {
-
+        category: [],
         event: {
             posterpic: posterFrame,
             topic: '',
@@ -50,7 +44,9 @@ class CreateEvent extends React.Component {
             line: '',
             web: '',
             phone: '',
-            description: ''
+            hashtag: '',
+            description: '',
+            categoryid: []
         },
 
         user: {
@@ -62,19 +58,30 @@ class CreateEvent extends React.Component {
     }
 
 
-    // try {
-    //     const {action, year, month, day} = await DatePickerAndroid.open({
-    //       // Use `new Date()` for current date.
-    //       // May 25 2020. Month 0 is January.
-    //       date: new Date(2020, 4, 25)
-    //     });
-    //     if (action !== DatePickerAndroid.dismissedAction) {
-    //       // Selected year, month (0-11), day
-    //     }
-    //   } catch ({code, message}) {
-    //     console.warn('Cannot open date picker', message);
-    //   }
+    getCategories() {
+        return new Promise((resolve, reject) => {
+            return fetch(API_URL + 'category')
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log('get categories', data)
+                    this.setState(
+                        { category: data },
+                        () => {
+                            this.getCurrentUser();
 
+                            resolve();
+                        }
+                    );
+
+                })
+                .catch((error) => {
+                    console.error(error);
+                    alert("Fail");
+                    reject();
+                });
+        });
+    }
+   
     getCurrentUser() {
         console.log("getCurrentUser")
 
@@ -110,37 +117,30 @@ class CreateEvent extends React.Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userid: "5709650069",
-                topic: "last",
+                // userid: this.state.user.userid,
+                topic: this.state.event.topic,
                 join: [
-                    1
+                    this.state.user.userid
                 ],
-                createby: 1,
-                location: "สนามศุภชลาศัยจ้าาาา",
-                approve: "2",
-                description: "งานฟุตบอลประเพณี ค่าบัตรราคา 100,200,400 บาท ซื้อบัตรได้ที่ศูนย์หนังสือธรรมศาสตร์ มี bnk นะจ้ะงานนี้ ",
-                facebook: "CUTU football",
-                line: "line",
-                web: "web",
-                phone: "08527800003",
-                hashtag: "#cututraditional#football#ฟุตบอลประเพณี",
-                bcapprove: "-",
-                posterpic: "l",
-                createdate: "2018-03-26T04:03:01.559000Z",
-                updatedate: "2018-03-26T04:03:01.559000Z",
-                startdate: "2018-03-26T04:03:01.559000Z",
-                enddate: "2018-03-26T04:03:01.559000Z",
-                eventstdate: "2018-03-26T04:03:01.559000Z",
-                eventenddate: "2018-03-26T04:03:01.559000Z",
-                active: true,
-                limited: 100,
+                createby: this.state.user.userid,
+                location: this.state.event.place,
+                approve: "1",
+                description: this.state.event.description,
+                facebook: this.state.event.facebook,
+                line: this.state.event.line,
+                web: this.state.event.web,
+                phone: this.state.event.phone,
+                hashtag: "#Footbal",
+                // bcapprove: "-",
+                // posterpic: "",
+                // createdate: "",
+                // updatedate: "",
+                eventstdate: this.state.event.eventstdate,
+                eventenddate: this.state.event.eventenddate,
+                // active: true,
+                limited: this.state.event.limited,
 
-                // topic: this.state.topic,
-                // date: this.state.date,
-                // time: this.state.time,
-                // place: this.state.place,
-                // contact: this.state.contact,
-                // description: this.state.description
+                categoryid: this.state.event.categoryid
 
             }),
         })
@@ -162,9 +162,9 @@ class CreateEvent extends React.Component {
             });
     }
 
-    setDate = async () => {
+    setStartDate = async () => {
         try {
-            alert(55555555555555555555555555555555555555555555555555555555555555555555)
+            alert("Start Date")
             const { action, year, month, day } = await DatePickerAndroid.open({
                 // Use `new Date()` for current date.
                 // May 25 2020. Month 0 is January.
@@ -178,8 +178,8 @@ class CreateEvent extends React.Component {
                 console.log('Action ', action)
                 this.setState({
                     event: {
-                        ...this.state.event ,
-                        eventstdate : new Date(year,month,day,this.state.event.eventstdate.getHours(),this.state.event.eventstdate.getMinutes(),this.state.event.eventstdate.getMilliseconds())
+                        ...this.state.event,
+                        eventstdate: new Date(year, month, day, this.state.event.eventstdate.getHours(), this.state.event.eventstdate.getMinutes(), this.state.event.eventstdate.getMilliseconds())
                     }
                 })
 
@@ -192,6 +192,37 @@ class CreateEvent extends React.Component {
         }
     }
 
+    setEndDate = async () => {
+        try {
+            alert("End Date")
+            const { action, year, month, day } = await DatePickerAndroid.open({
+                // Use `new Date()` for current date.
+                // May 25 2020. Month 0 is January.
+                date: this.state.event.eventenddate
+            });
+            if (action !== DatePickerAndroid.dismissedAction) {
+                // Selected year, month (0-11), day
+                console.log('Day ', day)
+                console.log('Month ', month)
+                console.log('Year ', year)
+                console.log('Action ', action)
+                this.setState({
+                    event: {
+                        ...this.state.event,
+                        eventenddate: new Date(year, month, day, this.state.event.eventenddate.getHours(), this.state.event.eventenddate.getMinutes(), this.state.event.eventstdate.getMilliseconds())
+                    }
+                })
+
+                console.log(this.state.event.eventenddate)
+            }
+
+
+        } catch ({ code, message }) {
+            console.warn('Cannot open date picker', message);
+        }
+    }
+
+
     setTime = async () => {
 
         try {
@@ -201,7 +232,7 @@ class CreateEvent extends React.Component {
 
                 hour: this.state.event.eventstdate.getHours(),
                 minute: this.state.event.eventstdate.getMinutes(),
-                is24Hour: false, // Will display '2 PM'
+                is24Hour: false, // Will display '2 PM',
             });
             if (action !== TimePickerAndroid.dismissedAction) {
                 // Selected hour (0-23), minute (0-59)
@@ -210,12 +241,12 @@ class CreateEvent extends React.Component {
                 this.setState({
                     event: {
                         ...this.state.event,
-                        eventstdate : new Date(this.state.event.eventstdate.getFullYear(),this.state.event.eventstdate.getMonth(),this.state.event.eventstdate.getDate(), hour, minute)
+                        eventstdate: new Date(this.state.event.eventstdate.getFullYear(), this.state.event.eventstdate.getMonth(), this.state.event.eventstdate.getDate(), hour, minute)
                     }
                 })
 
                 console.log(this.state.event.eventstdate)
-                
+
             }
         } catch ({ code, message }) {
             console.warn('Cannot open time picker', message);
@@ -225,7 +256,9 @@ class CreateEvent extends React.Component {
 
     componentDidMount() {
         // fetch('https://facebook.github.io/react-native/movies.json')
-        this.getCurrentUser();
+        // this.getCurrentUser();
+        this.getCategories()
+
 
     }
 
@@ -257,6 +290,39 @@ class CreateEvent extends React.Component {
                 });
             }
         });
+    }
+
+    checkValue(cid) {
+        if (this.state.event.categoryid.find((id) => cid === id)) {
+            this.setState({
+                event: {
+                    ...this.state.event,
+                    // userpic: kaimook, //TODO remove ******************************************************      
+                    categoryid: this.state.event.categoryid.filter((id) => id !== cid)
+                }
+            })
+        }
+        else {
+            this.setState({
+                event: {
+                    ...this.state.event,
+                    // userpic: kaimook //TODO remove ******************************************************
+                    categoryid: [...this.state.event.categoryid, cid]
+                }
+            })
+        }
+    }
+
+    setFormatDate(date,month,year){
+        date = "0"+date
+        month = "0"+month
+        return date.substring(date.length-2,date.length)+"-"+month.substring(month.length-2,month.length)+"-"+year
+    }
+
+    setFormatTime(hours,minutes){
+        hours = "0"+hours
+        minutes = "0"+minutes
+        return hours.substring(hours.length-2,hours.length)+":"+minutes.substring(minutes.length-2,minutes.length)
     }
 
     render() {
@@ -310,33 +376,80 @@ class CreateEvent extends React.Component {
                                 })}
                             />
 
+
                             <TouchableOpacity
-                                style={styles.setBtnStyle}
-                                onPress={() => { this.setDate() }}
-                            >
-                                <Text style={styles.setTextStyle}>
-                                    date
-                                        </Text>
+
+                                onPress={() => {
+                                    // this.setState({ isSelect: item.id })
+                                    // this.props.filterCategory(item.id)
+                                    // Actions.Description({ eventid: item.id });
+                                    this.setStartDate()
+                                }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ flex: 1 }}>
+                                        <TextField
+                                            label='Start Event Date'
+                                            editable={false}
+                                            value={this.setFormatDate(this.state.event.eventstdate.getDate(),this.state.event.eventstdate.getMonth() +1,this.state.event.eventstdate.getFullYear())}
+                                        
+                                        />
+                                    </View>
+                                    <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
+                                        <Icon name='date-range' type='material-icons' size={50} color='green'
+                                        />
+                                    </View>
+
+                                </View>
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                style={styles.setBtnStyle}
-                                onPress={() => { this.setDate() }}
-                            >
-                                <Text style={styles.setTextStyle}>
-                                    date
-                                        </Text>
+
+                                onPress={() => {
+                                    // this.setState({ isSelect: item.id })
+                                    // this.props.filterCategory(item.id)
+                                    // Actions.Description({ eventid: item.id });
+                                    this.setEndDate()
+                                }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ flex: 1 }}>
+                                        <TextField
+                                            label='End Event Date'
+                                            // disabled={true}
+                                            editable={false}
+                                            value={this.setFormatDate(this.state.event.eventenddate.getDate(),this.state.event.eventenddate.getMonth(),this.state.event.eventenddate.getFullYear())}                                                                                        
+                                        />
+                                    </View>
+                                    <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
+                                        <Icon name='date-range' type='material-icons' size={50} color='green'
+                                        />
+                                    </View>
+
+                                </View>
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                style={styles.setBtnStyle}
-                                onPress={() => { this.setTime() }}
-                            >
-                                <Text style={styles.setTextStyle}>
-                                    time
-                                        </Text>
-                            </TouchableOpacity>
 
+                                onPress={() => {
+                                   
+                                    this.setTime()
+                                }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ flex: 1 }}>
+                                        <TextField
+                                            label='Start Event Time'
+                                            // disabled={true}
+                                            editable={false}
+                                            value={this.setFormatTime(this.state.event.eventstdate.getHours(),this.state.event.eventstdate.getMinutes())}
+                                            
+                                        />
+                                    </View>
+                                    <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
+                                        <Icon name='access-time' type='material-icons' size={50} color='green'
+                                        />
+                                    </View>
+
+                                </View>
+                            </TouchableOpacity>
 
                             <TextField
                                 label='Location'
@@ -401,6 +514,50 @@ class CreateEvent extends React.Component {
                                     }
                                 })}
                             />
+
+                            {/* <Button
+                                    large
+                                    icon={{ name: 'date-range', type: 'material-icons' }}
+                                    // title='Edit profile'
+                                    // buttonStyle={{}
+
+                                    onPress={() => {
+                                        // this.updateUser()
+                                    }}
+
+                                /> */}
+
+                            <TouchableOpacity
+
+                                onPress={() => {
+                                    // this.setState({ isSelect: item.id })
+                                    // this.props.filterCategory(item.id)
+                                    // Actions.Description({ eventid: item.id });
+                                }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ flex: 1 }}>
+                                        <TextField
+                                            label='#Hashtag'
+                                            // disabled={true}
+                                            editable={false}
+                                            value={"this.state.event.hashtag"}
+                                            onChangeText={text => this.setState({
+                                                event: {
+                                                    ...this.state.event,
+                                                    hashtag: text
+                                                }
+                                            })}
+                                        />
+                                    </View>
+                                    <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
+                                        <Icon name='date-range' type='material-icons' size={50} color='green'
+                                        />
+                                    </View>
+
+                                </View>
+                            </TouchableOpacity>
+
+
                             <TextField
                                 label='Description'
                                 value={this.state.event.description}
@@ -411,6 +568,24 @@ class CreateEvent extends React.Component {
                                     }
                                 })}
                             />
+
+
+                            <Text style={styles.desStyle}>Category :   </Text>
+
+                            {this.state.category
+                                .map((c) => {
+
+                                    return (
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <CheckBox
+                                                value={false}
+                                                onValueChange={() => this.checkValue(c.id)}
+
+                                            />
+                                            <Text style={{ marginTop: 5 }}> {c.categoryname} </Text>
+                                        </View>
+                                    )
+                                })}
 
                             <View style={{ paddingVertical: 10 }}>
                                 <TouchableOpacity
