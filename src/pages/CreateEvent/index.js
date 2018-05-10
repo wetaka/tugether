@@ -46,7 +46,8 @@ class CreateEvent extends React.Component {
             phone: '',
             hashtag: '',
             description: '',
-            categoryid: []
+            categoryid: [],
+            limited:0
         },
 
         user: {
@@ -110,14 +111,13 @@ class CreateEvent extends React.Component {
 
 
     saveEvent() {
-        fetch(API_URL + 'event' + this.state.user.userid, {
+        fetch(API_URL + 'event', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                // userid: this.state.user.userid,
                 topic: this.state.event.topic,
                 join: [
                     this.state.user.userid
@@ -130,32 +130,17 @@ class CreateEvent extends React.Component {
                 line: this.state.event.line,
                 web: this.state.event.web,
                 phone: this.state.event.phone,
-                hashtag: "#Footbal",
-                // bcapprove: "-",
-                // posterpic: "",
-                // createdate: "",
-                // updatedate: "",
+                hashtag: this.state.event.hashtag,
                 eventstdate: this.state.event.eventstdate,
                 eventenddate: this.state.event.eventenddate,
-                // active: true,
                 limited: this.state.event.limited,
-
                 categoryid: this.state.event.categoryid
 
             }),
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                // this.state = {isLoading: false  };
                 console.log('vinaja', responseJson)
-
-                // this.setState({
-                //   isLoading: false,
-                //   dataSource: responseJson.movies,
-                // });
-
-                // alert(this.state.isLoading)
-
             })
             .catch((error) => {
                 console.error(error);
@@ -255,8 +240,6 @@ class CreateEvent extends React.Component {
 
 
     componentDidMount() {
-        // fetch('https://facebook.github.io/react-native/movies.json')
-        // this.getCurrentUser();
         this.getCategories()
 
 
@@ -345,12 +328,6 @@ class CreateEvent extends React.Component {
                         style={styles.buttonBar}
                     />
 
-                    {/* <View style={{ flexDirection: 'row', flex: 1 }}>
-                        <View style={{ height: 55, flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'row' }}>
-                            <TextInput style={{ fontSize: 20, flex: 1 }} placeholder="Search" />
-                            <Image source={FindIcon} style={{ width: '20%', height: '100%', alignItems: 'flex-end', justifyContent: 'flex-end' }} />
-                        </View>
-                    </View> */}
                 </View>
                 <ScrollView style={styles.scrollStyle}>
                     <View style={{ padding: 20 }}>
@@ -405,18 +382,15 @@ class CreateEvent extends React.Component {
                             <TouchableOpacity
 
                                 onPress={() => {
-                                    // this.setState({ isSelect: item.id })
-                                    // this.props.filterCategory(item.id)
-                                    // Actions.Description({ eventid: item.id });
+                                   
                                     this.setEndDate()
                                 }}>
                                 <View style={{ flexDirection: 'row' }}>
                                     <View style={{ flex: 1 }}>
                                         <TextField
                                             label='End Event Date'
-                                            // disabled={true}
                                             editable={false}
-                                            value={this.setFormatDate(this.state.event.eventenddate.getDate(),this.state.event.eventenddate.getMonth(),this.state.event.eventenddate.getFullYear())}                                                                                        
+                                            value={this.setFormatDate(this.state.event.eventenddate.getDate(),this.state.event.eventenddate.getMonth() +1,this.state.event.eventenddate.getFullYear())}                                                                                        
                                         />
                                     </View>
                                     <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
@@ -513,7 +487,18 @@ class CreateEvent extends React.Component {
                                         phone: text
                                     }
                                 })}
-                            />
+                            />           
+
+                            <TextField
+                                label='#Hashtag'
+                                value={this.state.event.hashtag}
+                                onChangeText={text => this.setState({
+                                    event: {
+                                        ...this.state.event,
+                                        hashtag: text
+                                    }
+                                })}
+                            />    
 
                             {/* <Button
                                     large
@@ -527,7 +512,7 @@ class CreateEvent extends React.Component {
 
                                 /> */}
 
-                            <TouchableOpacity
+                            {/* <TouchableOpacity
 
                                 onPress={() => {
                                     // this.setState({ isSelect: item.id })
@@ -555,7 +540,7 @@ class CreateEvent extends React.Component {
                                     </View>
 
                                 </View>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
 
 
                             <TextField
@@ -578,7 +563,7 @@ class CreateEvent extends React.Component {
                                     return (
                                         <View style={{ flexDirection: 'row' }}>
                                             <CheckBox
-                                                value={false}
+                                                value={(this.state.event.categoryid.find((id) => c.id === id)) ? true : false}
                                                 onValueChange={() => this.checkValue(c.id)}
 
                                             />

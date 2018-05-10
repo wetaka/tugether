@@ -15,6 +15,7 @@ import Notificate from './src/pages/Notificate';
 
 
 const Navigator = FluidNavigator({
+  UpdateEvent : {screen: UpdateEvent},
   CreateEvent: { screen: CreateEvent },
   Home: { screen: Home },
   UserSetting: { screen: UserSetting},   
