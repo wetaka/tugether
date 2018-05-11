@@ -5,6 +5,10 @@ import { API_URL } from "../../config/api";
 import { Button, Divider } from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
 import HeaderBack from "../../components/HeaderBack";
+import HeaderMain from "../../components/HeaderMain";
+import HeaderText from "../../components/HeaderText";
+
+
 
 
 // import { CheckBox } from 'react-native-elements'
@@ -41,8 +45,10 @@ class UserSetting extends React.Component {
     getCurrentUser() {
         console.log("getCurrentUser")
 
+
         return AsyncStorage.getItem('CURRENT_USER')
             .then(value => {
+                // alert('get Value')
                 value = JSON.parse(value);
                 if (value && value.userid) {
                     // this.setState({
@@ -64,7 +70,6 @@ class UserSetting extends React.Component {
 
     chooseImage() {
         ImagePicker.showImagePicker(options, (response) => {
-
             console.log('Response = ', response);
 
             if (response.didCancel) {
@@ -92,7 +97,7 @@ class UserSetting extends React.Component {
             }
         });
     }
-
+    
     updateUser() {
 
         return fetch(API_URL + 'user/' + this.state.user.userid, {
@@ -101,7 +106,10 @@ class UserSetting extends React.Component {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(this.state.user),
+            body: JSON.stringify(
+                {...this.state.user,
+                    userpic : this.state.user.userpic.uri
+                }),
         })
             .then((response) => response.json())
             .then((responseJson) => {
@@ -129,6 +137,7 @@ class UserSetting extends React.Component {
                     this.setState(
                         { category: data },
                         () => {
+                            // alert('before get user')
                             this.getCurrentUser();
 
                             resolve();
@@ -157,7 +166,7 @@ class UserSetting extends React.Component {
                     this.setState({
                         user: {
                             ...data,
-                            userpic: kaimook //TODO remove ******************************************************
+                            userpic: {uri: data.userpic} //TODO remove ******************************************************
                         }
                     })
 
@@ -205,9 +214,23 @@ class UserSetting extends React.Component {
     render() {
         if (this.state.user.userid) {
             return (
+                <View style={{ flex: 1 }}>
 
-                <View>
-                    <HeaderBack />
+                    <HeaderBack 
+                        header={"Setting"}
+                        backpage={this.props.navigation.goBack}
+                    />
+
+                    {/* <HeaderText 
+                        header={"Setting"}
+                    /> */}
+
+                    {/* <HeaderMain
+                        navigate={this.props.navigation.navigate}
+                    /> */}
+
+
+
                     <ScrollView style={{ flexDirection: 'column', backgroundColor: "white", flex: 1 }}>
 
                         <View style={{ padding: 20 }}>
@@ -217,17 +240,11 @@ class UserSetting extends React.Component {
                                 </TouchableOpacity>
                             </View>
                             <View style={{}}>
-
-
                                 <View style={{ flexDirection: 'row' }}>
                                     <View style={{ alignItems: 'flex-start' }}>
                                         <Text style={styles.desStyle}>ID : {this.state.user.userid} </Text>
                                         <Text style={styles.desStyle}>Firstname : {this.state.user.firstname}</Text>
                                         <Text style={styles.desStyle}>Lastname : {this.state.user.lastname} </Text>
-
-
-                                        {/* <Text style={styles.desStyle}>Contact:   </Text> */}
-                                        {/* <Text style={styles.desStyle}>Description:   </Text> */}
                                     </View>
 
                                 </View>

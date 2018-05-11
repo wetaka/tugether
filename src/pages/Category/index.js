@@ -7,6 +7,7 @@ import CustomButton from "../../components/CustomButton";
 import Bg from "../../Images/bg.jpg";
 const { width } = Dimensions.get("window");
 import { API_URL } from "../../config/api";
+import HeaderText from "../../components/HeaderText";
 
 const categories = [
     { text: 'Sport1' },
@@ -79,49 +80,49 @@ class Category extends React.Component {
 
     addUser() {
         return new Promise((resolve, reject) => {
-                // console.log("+++++++++++++++++++++++++++++")
-                // console.log(this.state.category)
-                // console.log("----------------------------------------------")
-                // let result = this.state.category.filter(e => e.isSelect === true)
-                // let resultid= result.map(e => e.id)
-                // console.log(resultid)
-                // console.log(...resultid)
-                const body = {
-                    userid: "" + this.props.navigation.state.params.userid,
-                    firstname: "" + firstname,
-                    lastname: "" + lastname,
-                    major: "" + major,
-                    department: "" + department,
-                    nation: "" + nation,
-                    title: "" + title,
-                    year: "" + year,
-                    age: age,
-                    active: active,
-                    categoryid: resultid
+            // console.log("+++++++++++++++++++++++++++++")
+            // console.log(this.state.category)
+            // console.log("----------------------------------------------")
+            // let result = this.state.category.filter(e => e.isSelect === true)
+            // let resultid= result.map(e => e.id)
+            // console.log(resultid)
+            // console.log(...resultid)
+            const body = {
+                userid: "" + this.props.navigation.state.params.userid,
+                firstname: "" + firstname,
+                lastname: "" + lastname,
+                major: "" + major,
+                department: "" + department,
+                nation: "" + nation,
+                title: "" + title,
+                year: "" + year,
+                age: age,
+                active: active,
+                categoryid: resultid
 
-                };
+            };
 
-                return fetch(API_URL + 'user', {
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(body),
+            return fetch(API_URL + 'user', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    console.log('vinaja', responseJson)
+                    // this.getidofuser()
+                    // this.addfirstcategory()
+
+                    resolve();
                 })
-                    .then((response) => response.json())
-                    .then((responseJson) => {
-                        console.log('vinaja', responseJson)
-                        // this.getidofuser()
-                        // this.addfirstcategory()
-
-                        resolve();
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                        reject();
-                    });
-            }
+                .catch((error) => {
+                    console.error(error);
+                    reject();
+                });
+        }
 
         );
     }
@@ -194,72 +195,78 @@ class Category extends React.Component {
     render() {
 
         return (
-            <ScrollView style={styles.scrollStyle}>
-                <View>
+            <View style={{ flex: 1 }}>
+                <HeaderText
+                    header={"Favorite Category"}
+                />
 
-                    {this.state.category.map((c, index) => (
+                <ScrollView style={styles.scrollStyle}>
+                    <View>
+
+                        {this.state.category.map((c, index) => (
+                            <View style={{ paddingVertical: 10 }}>
+                                <TouchableOpacity
+                                    style={{
+                                        backgroundColor: (c.isSelect) ? 'green' : 'red',
+                                        padding: 15,
+                                        borderRadius: 15,
+                                        alignItems: "center"
+                                    }}
+                                    onPress={() => {
+                                        this.toggleSelect(index)
+                                    }}
+                                >
+                                    <Text style={styles.categoryStyle}>
+                                        {c.categoryname}
+                                    </Text>
+                                </TouchableOpacity>
+
+                            </View>
+
+                        ))}
+
+
                         <View style={{ paddingVertical: 10 }}>
-                            <TouchableOpacity
-                                style={{
-                                    backgroundColor: (c.isSelect) ? 'green' : 'red',
-                                    padding: 15,
-                                    borderRadius: 15,
-                                    alignItems: "center"
-                                }}
-                                onPress={() => {
-                                    this.toggleSelect(index)
-                                }}
-                            >
-                                <Text style={styles.categoryStyle}>
-                                    {c.categoryname}
-                                </Text>
-                            </TouchableOpacity>
+                            <View style={{ paddingVertical: 10 }}>
+                                <TouchableOpacity
+                                    style={styles.buttonStyle}
+                                    onPress={() => {
 
-                        </View>
+                                        this.addUser()
+                                            // .then(() => {
+                                            //     // const actions = this.state.category.map(c => this.addFavCategory(c));
+                                            //     // const actions = this.state.category.map(c => 5);
+                                            //     // console.log(actions);
+                                            //     return Promise.all(this.state.category.map(c => this.addFavCategory(c)));
+                                            // })
+                                            .then(() => {
+                                                alert('All Success');
+                                                // Actions.Home({userid: this.props.userid});
+                                                this.props.navigation.navigate('Home', {
+                                                    userid: this.props.navigation.state.params.userid
+                                                })
 
-                    ))}
-
-
-                    <View style={{ paddingVertical: 10 }}>
-                        <View style={{ paddingVertical: 10 }}>
-                            <TouchableOpacity
-                                style={styles.buttonStyle}
-                                onPress={() => {
-                                   
-                                    this.addUser()
-                                        // .then(() => {
-                                        //     // const actions = this.state.category.map(c => this.addFavCategory(c));
-                                        //     // const actions = this.state.category.map(c => 5);
-                                        //     // console.log(actions);
-                                        //     return Promise.all(this.state.category.map(c => this.addFavCategory(c)));
-                                        // })
-                                        .then(() => {
-                                            alert('All Success');
-                                            // Actions.Home({userid: this.props.userid});
-                                            this.props.navigation.navigate('Home', {
-                                                userid: this.props.navigation.state.params.userid
                                             })
+                                            .catch((error) => {
+                                                console.error(error);
+                                                alert('Not Success');
 
-                                        })
-                                        .catch((error) => {
-                                            console.error(error);
-                                            alert('Not Success');
-
-                                        });
+                                            });
 
 
 
-                                }}
-                            >
-                                <Text style={{ color: "white", fontSize: 20 }}>
-                                    OK
+                                    }}
+                                >
+                                    <Text style={{ color: "white", fontSize: 20 }}>
+                                        OK
                                      </Text>
-                            </TouchableOpacity>
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                    </View>
 
-                </View>
-            </ScrollView>
+                    </View>
+                </ScrollView>
+            </View >
         );
     }
 }

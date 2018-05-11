@@ -13,6 +13,7 @@ const { width, height } = Dimensions.get('window');
 import SearchHeader from "../../components/SearchHeader";
 import { API_URL } from "../../config/api";
 import { Transition } from 'react-navigation-fluid-transitions';
+import HeaderBack from "../../components/HeaderBack";
 
 import { Icon } from 'react-native-elements';
 
@@ -253,6 +254,11 @@ class Description extends React.Component {
         const { event } = this.state
         return (
             <View style={{ flex: 1 }}>
+
+                <HeaderBack 
+                        header={"Description"}
+                        backpage={this.props.navigation.goBack}
+                    />
 
                 <View style={styles.searchStyle}>
                     <SearchHeader

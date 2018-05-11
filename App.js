@@ -17,7 +17,9 @@ import UpdateEvent from './src/pages/UpdateEvent';
 
 
 const Navigator = FluidNavigator({
-  UserSetting: { screen: UserSetting },
+   UserSetting: { screen: UserSetting },
+   Main: { screen: Main },
+ 
   UpdateEvent: { screen: UpdateEvent },
   CreateEvent: { screen: CreateEvent },
   
@@ -32,7 +34,7 @@ const Navigator = FluidNavigator({
   Category: { screen: Category },
   Joined: { screen: Joined },
   // CreateEvent: { screen: CreateEvent },
-  Main: { screen: Main },
+  // Main: { screen: Main },
   MasonryPage: { screen: MasonryPage },
 
   // Notificate: { screen: Notificate }

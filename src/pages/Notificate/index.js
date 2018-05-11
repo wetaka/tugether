@@ -13,6 +13,7 @@ import imgposter2 from '../../Images/poster2.jpg';
 import location from '../../Images/location.png';
 import Footer from "../../components/Footer";
 import { Icon } from 'react-native-elements';
+import HeaderText from "../../components/HeaderText";
 
 
 const { width, height } = Dimensions.get('window');
@@ -82,6 +83,10 @@ class Notificate extends React.Component {
         let iconcolor = '';
         return (
             <View style={{ flex: 1 }}>
+            
+                <HeaderText
+                    header={"Notification"}
+                />
 
                 <View style={{ flexDirection: 'column', height: 55, width: '100%' }}>
 

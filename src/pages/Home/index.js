@@ -16,6 +16,7 @@ import SearchBox from "../../components/SearchBox";
 import { API_URL } from "../../config/api";
 import ListCategory from '../../components/ListCategory';
 import { Transition } from 'react-navigation-fluid-transitions';
+import HeaderText from "../../components/HeaderText";
 
 // import posterframe from '../../Images/posterframe.jpg'
 const { width, height } = Dimensions.get('window');
@@ -227,7 +228,7 @@ class Home extends React.Component {
             // Actions.Description({ eventid: item.id });
           }}>
           <Transition shared='circle'>
-          {/* <Transition shared={item.id}> */}
+            {/* <Transition shared={item.id}> */}
             <Image source={imgposter1}
               style={styles.posterImg} />
           </Transition>
@@ -255,6 +256,10 @@ class Home extends React.Component {
       <View style={{ flex: 1 }}>
 
         {/* search */}
+        <HeaderText 
+            header={"Home"}
+        />
+
 
         <View style={styles.searchView}>
           <SearchHeader />

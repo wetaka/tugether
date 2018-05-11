@@ -26,6 +26,7 @@ import Footer from "../../components/Footer";
 import SearchHeader from "../../components/SearchHeader";
 import {API_URL} from "../../config/api"; 
 import { Transition } from 'react-navigation-fluid-transitions';
+import HeaderMain from "../../components/HeaderMain";
 
 
 const { width, height } = Dimensions.get('window');
@@ -218,13 +219,15 @@ class Main extends React.Component {
     return (
 
       <View style={{ flex: 1 }}>
-
-        <View style={styles.searchView}>
+         <HeaderMain
+            navigate={this.props.navigation.navigate}
+          />
+        {/* <View style={styles.searchView}>
           <SearchHeader
             isMainPage={true}
             navigate ={this.props.navigation.navigate}
-          />
-        </View>
+          /> */}
+        {/* </View> */}
 
         <View>
           <View style={styles.userStyle}>

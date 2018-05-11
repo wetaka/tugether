@@ -9,7 +9,9 @@ import ProfileIcon from '../../Images/profileicon.png';
 import FindIcon from '../../Images/findicon.png';
 import {API_URL} from "../../config/api"; 
 import Footer from "../../components/Footer";
-import SearchHeader from "../../components/SearchHeader";
+// import SearchHeader from "../../components/SearchHeader";
+import HeaderBack from "../../components/HeaderBack";
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -57,6 +59,10 @@ class Joined extends React.Component {
         alert(this.state.users.length)
         return (
             <View style={{ flex: 1 }}>
+                <HeaderBack 
+                        header={"Joined List"}
+                        backpage={this.props.navigation.goBack}
+                    />
 
                 <View style={styles.searchView}>
                     <SearchHeader />

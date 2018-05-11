@@ -12,6 +12,9 @@ import { API_URL } from "../../config/api";
 import { TextField } from 'react-native-material-textfield';
 import { Button, Divider, Icon } from 'react-native-elements';
 import moment from 'moment'
+import HeaderBack from "../../components/HeaderBack";
+
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -445,17 +448,10 @@ class CreateEvent extends React.Component {
     render() {
         return (
             <View style={{ flex: 1 }}>
-                <Search
-                    ref="search_box"
-                    /**
-                     * There many props that can customizable
-                    * Please scroll down to Props section
-
-                    */
-                    backgroundColor="orange"
-
-
-                />
+                <HeaderBack 
+                        header={"Create Event"}
+                        backpage={this.props.navigation.goBack}
+                    />
                 <View style={styles.viewBtn}>
 
                     <Image source={Buttonbar}

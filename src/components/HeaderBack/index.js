@@ -8,17 +8,35 @@ import Buttonbar from '../../Images/bar.jpg';
 // import NotiIcon from '../../Images/notiicon.png';
 // import ProfileIcon from '../../Images/profileicon.png';
 import FindIcon from '../../Images/findicon.png';
+
 import { Actions } from "react-native-router-flux";
 import React, { Component } from 'react';
 import { Icon } from 'react-native-elements';
 
 export default class HeaderBack extends Component {
     render() {
+
         return (
 
-            <View style={{height: 55, width: '100%' ,resizeMode: 'stretch',backgroundColor: 'red'}}>
+            <View style={{ height: 55, width: '100%', resizeMode: 'stretch', backgroundColor: 'red', flexDirection: 'row', justifyContent: 'flex-start', paddingHorizontal: 10 }}>
+                <TouchableOpacity
 
-               
+                    onPress={() => {
+                        this.props.backpage()
+                    }}>
+                    <View style={{ justifyContent: 'center' }}>
+                        <Icon name='ios-arrow-back' type='ionicon' size={40} color='white'
+                        />
+                    </View>
+                </TouchableOpacity>
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                    <Text style={{ color: 'white', fontSize: 30, }}>
+                        {this.props.header}
+                    </Text>
+                </View>
+                <View style={{ width: 40 }}>
+                </View>
+
             </View>
         );
     }
